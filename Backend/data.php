@@ -1,0 +1,47 @@
+<?php
+$skills = [
+ ['id'=>'beatmatching','name'=>'Beatmatching','description'=>'Sincronizacion precisa de BPMs y fases entre tracks','category'=>'Tecnica'],
+ ['id'=>'loops-effects','name'=>'Loops y Efectos','description'=>'Uso creativo de loops, samples y efectos','category'=>'Creativa'],
+ ['id'=>'transitions','name'=>'Transiciones','description'=>'Fluidez y tecnica en el paso entre canciones','category'=>'Tecnica'],
+ ['id'=>'creativity','name'=>'Creatividad','description'=>'Originalidad en seleccion y combinacion de tracks','category'=>'Creativa'],
+ ['id'=>'energy-management','name'=>'Manejo de Energia','description'=>'Control del flow y energia del set','category'=>'Performance'],
+];
+$tiers = [
+ ['id'=>'bedroom','name'=>'Bedroom DJ','min'=>0,'max'=>20,'color'=>'#CD7F32'],
+ ['id'=>'warmup','name'=>'Warm-up DJ','min'=>21,'max'=>40,'color'=>'#C0C0C0'],
+ ['id'=>'resident','name'=>'Residente','min'=>41,'max'=>60,'color'=>'#FFD700'],
+ ['id'=>'headliner','name'=>'Headliner','min'=>61,'max'=>80,'color'=>'#E5E4E2'],
+ ['id'=>'festival','name'=>'Festival Star','min'=>81,'max'=>100,'color'=>'#B9F2FF'],
+];
+$teachers = [
+ ['id'=>'teacher-1','name'=>'Carlos Mendoza','email'=>'carlos@nogik.com','role'=>'teacher','avatar'=>'CM','specialties'=>['Techno','Minimal','Tech House'],'bio'=>'15 anos de experiencia como DJ residente en clubs de Ibiza y Berlin.'],
+ ['id'=>'teacher-2','name'=>'Ana Rivera','email'=>'ana@nogik.com','role'=>'teacher','avatar'=>'AR','specialties'=>['House','Deep House','Disco'],'bio'=>'Productora y DJ con releases en sellos internacionales.'],
+];
+$students = [
+ ['id'=>'student-1','name'=>'Demo Student','email'=>'demo@nogik.com','role'=>'student','level'=>4,'xp'=>1850,'xpToNextLevel'=>2000,'reputation'=>45,'totalSets'=>5,'completedClassIds'=>['class-1','class-2','class-3'],'skills'=>[['skillId'=>'beatmatching','level'=>4,'status'=>'completed','xp'=>450,'xpToNextLevel'=>500],['skillId'=>'loops-effects','level'=>3,'status'=>'in-progress','xp'=>280,'xpToNextLevel'=>400],['skillId'=>'transitions','level'=>3,'status'=>'in-progress','xp'=>350,'xpToNextLevel'=>400],['skillId'=>'creativity','level'=>2,'status'=>'in-progress','xp'=>180,'xpToNextLevel'=>300],['skillId'=>'energy-management','level'=>2,'status'=>'in-progress','xp'=>150,'xpToNextLevel'=>300]]],
+ ['id'=>'student-2','name'=>'Miguel Torres','email'=>'miguel@email.com','role'=>'student','level'=>6,'xp'=>3200,'xpToNextLevel'=>3500,'reputation'=>62,'totalSets'=>8,'completedClassIds'=>['class-1','class-2','class-3','class-4','class-5'],'skills'=>[['skillId'=>'beatmatching','level'=>5,'status'=>'completed','xp'=>500,'xpToNextLevel'=>500],['skillId'=>'loops-effects','level'=>4,'status'=>'completed','xp'=>480,'xpToNextLevel'=>500],['skillId'=>'transitions','level'=>4,'status'=>'in-progress','xp'=>420,'xpToNextLevel'=>500],['skillId'=>'creativity','level'=>3,'status'=>'in-progress','xp'=>320,'xpToNextLevel'=>400],['skillId'=>'energy-management','level'=>3,'status'=>'in-progress','xp'=>280,'xpToNextLevel'=>400]]],
+ ['id'=>'student-3','name'=>'Laura Sanchez','email'=>'laura@email.com','role'=>'student','level'=>2,'xp'=>450,'xpToNextLevel'=>750,'reputation'=>18,'totalSets'=>2,'completedClassIds'=>['class-1'],'skills'=>[['skillId'=>'beatmatching','level'=>2,'status'=>'in-progress','xp'=>150,'xpToNextLevel'=>300],['skillId'=>'loops-effects','level'=>1,'status'=>'in-progress','xp'=>80,'xpToNextLevel'=>200],['skillId'=>'transitions','level'=>1,'status'=>'in-progress','xp'=>100,'xpToNextLevel'=>200],['skillId'=>'creativity','level'=>1,'status'=>'not-started','xp'=>50,'xpToNextLevel'=>200],['skillId'=>'energy-management','level'=>1,'status'=>'not-started','xp'=>30,'xpToNextLevel'=>200]]],
+ ['id'=>'student-4','name'=>'Diego Ramirez','email'=>'diego@email.com','role'=>'student','level'=>8,'xp'=>5800,'xpToNextLevel'=>6000,'reputation'=>78,'totalSets'=>12,'completedClassIds'=>['class-1','class-2','class-3','class-4','class-5','class-6'],'skills'=>[['skillId'=>'beatmatching','level'=>5,'status'=>'completed','xp'=>500,'xpToNextLevel'=>500],['skillId'=>'loops-effects','level'=>5,'status'=>'completed','xp'=>500,'xpToNextLevel'=>500],['skillId'=>'transitions','level'=>5,'status'=>'completed','xp'=>500,'xpToNextLevel'=>500],['skillId'=>'creativity','level'=>4,'status'=>'in-progress','xp'=>420,'xpToNextLevel'=>500],['skillId'=>'energy-management','level'=>4,'status'=>'in-progress','xp'=>380,'xpToNextLevel'=>500]]],
+ ['id'=>'student-5','name'=>'Sofia Herrera','email'=>'sofia@email.com','role'=>'student','level'=>1,'xp'=>120,'xpToNextLevel'=>500,'reputation'=>5,'totalSets'=>0,'completedClassIds'=>[],'skills'=>[['skillId'=>'beatmatching','level'=>1,'status'=>'in-progress','xp'=>60,'xpToNextLevel'=>200],['skillId'=>'loops-effects','level'=>0,'status'=>'not-started','xp'=>0,'xpToNextLevel'=>200],['skillId'=>'transitions','level'=>0,'status'=>'not-started','xp'=>20,'xpToNextLevel'=>200],['skillId'=>'creativity','level'=>0,'status'=>'not-started','xp'=>0,'xpToNextLevel'=>200],['skillId'=>'energy-management','level'=>0,'status'=>'not-started','xp'=>0,'xpToNextLevel'=>200]]],
+];
+$classes = [
+ ['id'=>'class-1','title'=>'Fundamentos del Beatmatching','description'=>'Aprende las bases de la sincronizacion de BPMs usando los oidos y el pitch fader.','teacherId'=>'teacher-1','date'=>'2024-10-01 18:00','duration'=>90,'status'=>'completed'],
+ ['id'=>'class-2','title'=>'Uso Creativo de Loops','description'=>'Tecnicas para crear loops en vivo y usarlos creativamente durante el mix.','teacherId'=>'teacher-2','date'=>'2024-10-08 18:00','duration'=>90,'status'=>'completed'],
+ ['id'=>'class-3','title'=>'Transiciones Fluidas','description'=>'Domina corte, fade, EQ mixing y mas.','teacherId'=>'teacher-1','date'=>'2024-10-15 18:00','duration'=>120,'status'=>'completed'],
+ ['id'=>'class-7','title'=>'Tecnicas Avanzadas de Scratching','description'=>'Introduccion al scratching y tecnicas turntablistas basicas.','teacherId'=>'teacher-1','date'=>'2024-11-12 18:00','duration'=>120,'status'=>'upcoming'],
+ ['id'=>'class-8','title'=>'Masterclass: Warm-up Sets','description'=>'El arte de abrir una noche con seleccion musical y manejo de energia inicial.','teacherId'=>'teacher-2','date'=>'2024-11-19 18:00','duration'=>90,'status'=>'upcoming'],
+];
+$sets = [
+ ['id'=>'set-1','studentId'=>'student-1','title'=>'Tech House Journey','description'=>'Mi primer set completo de tech house, enfocado en transiciones limpias.','url'=>'https://soundcloud.com/example/tech-house-journey','genre'=>'Tech House','duration'=>60,'uploadedAt'=>'2024-10-18','comments'=>2,'evaluation'=>['teacherId'=>'teacher-1','technique'=>7,'coherence'=>8,'creativity'=>6,'adaptation'=>7,'overallScore'=>7,'feedback'=>'Buen trabajo en las transiciones. El beatmatching esta muy limpio.','xpAwarded'=>150,'reputationChange'=>3]],
+ ['id'=>'set-2','studentId'=>'student-1','title'=>'Deep Vibes Session','description'=>'Set de deep house para ambientes mas relajados.','url'=>'https://mixcloud.com/example/deep-vibes','genre'=>'Deep House','duration'=>45,'uploadedAt'=>'2024-10-25','comments'=>0,'evaluation'=>null],
+ ['id'=>'set-3','studentId'=>'student-2','title'=>'Melodic Techno Experience','description'=>'Explorando sonidos melodicos con progresiones intensas.','url'=>'https://soundcloud.com/example/melodic-techno','genre'=>'Melodic Techno','duration'=>90,'uploadedAt'=>'2024-10-22','comments'=>0,'evaluation'=>['teacherId'=>'teacher-1','technique'=>9,'coherence'=>9,'creativity'=>8,'adaptation'=>8,'overallScore'=>8.5,'feedback'=>'Excelente dominio tecnico y muy buena narrativa en el set.','xpAwarded'=>200,'reputationChange'=>5]],
+ ['id'=>'set-4','studentId'=>'student-4','title'=>'Peak Time Weapons','description'=>'Set de hora punta con tracks potentes y mucha energia.','url'=>'https://soundcloud.com/example/peak-time','genre'=>'Techno','duration'=>75,'uploadedAt'=>'2024-10-28','comments'=>0,'evaluation'=>['teacherId'=>'teacher-2','technique'=>9,'coherence'=>9,'creativity'=>9,'adaptation'=>8,'overallScore'=>8.75,'feedback'=>'Set de nivel profesional. Excelente seleccion y ejecucion impecable.','xpAwarded'=>250,'reputationChange'=>7]],
+ ['id'=>'set-5','studentId'=>'student-3','title'=>'House Basics Mix','description'=>'Practicando lo basico con house clasico.','url'=>'https://soundcloud.com/example/house-basics','genre'=>'House','duration'=>30,'uploadedAt'=>'2024-10-30','comments'=>0,'evaluation'=>null],
+];
+$events = [
+ ['name'=>'Noche de Miercoles en Bar Local','venue'=>'Bar','audience'=>80,'duration'=>120,'styles'=>'House, Deep House, Disco','payment'=>100,'difficulty'=>'Principiante','requiredReputation'=>0],
+ ['name'=>'After-Office Friday','venue'=>'Bar','audience'=>120,'duration'=>180,'styles'=>'Tech House, House, Funk','payment'=>150,'difficulty'=>'Principiante','requiredReputation'=>10],
+ ['name'=>'Warm-up en Club Underground','venue'=>'Club','audience'=>300,'duration'=>120,'styles'=>'Minimal, Tech House, Deep House','payment'=>200,'difficulty'=>'Intermedio','requiredReputation'=>25],
+ ['name'=>'Slot de Madrugada en Club','venue'=>'Club','audience'=>500,'duration'=>180,'styles'=>'Techno, Melodic Techno, Tech House','payment'=>350,'difficulty'=>'Avanzado','requiredReputation'=>50],
+ ['name'=>'Festival de Electronica - Stage Secundario','venue'=>'Festival','audience'=>3000,'duration'=>90,'styles'=>'Techno, Tech House, Progressive House','payment'=>1000,'difficulty'=>'Pro','requiredReputation'=>85],
+];
