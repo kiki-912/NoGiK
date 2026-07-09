@@ -1,0 +1,82 @@
+/* NogiK - Stylesheet Override */
+
+:root, .dark {
+    --color-background: #0F1115;
+    --color-foreground: #E0E0E0;
+    --color-card: #1A1D23;
+    --color-card-foreground: #E0E0E0;
+    --color-popover: #1A1D23;
+    --color-popover-foreground: #E0E0E0;
+    --color-primary: #00F2FF;
+    --color-primary-foreground: #0F1115;
+    --color-secondary: #7000FF;
+    --color-secondary-foreground: #E0E0E0;
+    --color-muted: #252830;
+    --color-muted-foreground: #9CA3AF;
+    --color-border: #2D3139;
+    --color-input: #252830;
+    --color-ring: #00F2FF;
+}
+
+.light {
+    --color-background: #F8FAFC;
+    --color-foreground: #1E293B;
+    --color-card: #FFFFFF;
+    --color-card-foreground: #1E293B;
+    --color-popover: #FFFFFF;
+    --color-popover-foreground: #1E293B;
+    --color-primary: #0EA5E9;
+    --color-primary-foreground: #FFFFFF;
+    --color-secondary: #6366F1;
+    --color-secondary-foreground: #FFFFFF;
+    --color-muted: #F1F5F9;
+    --color-muted-foreground: #64748B;
+    --color-border: #E2E8F0;
+    --color-input: #F1F5F9;
+    --color-ring: #0EA5E9;
+}
+
+/* Base settings */
+body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #0F1115;
+}
+::-webkit-scrollbar-thumb {
+    background: #252830;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #2D3139;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+    background: rgba(26, 29, 35, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(45, 49, 57, 0.5);
+}
+
+.text-2xs {
+    font-size: 0.65rem;
+}
+
+.text-3xs {
+    font-size: 0.55rem;
+}
+
+/* Progress bar customization for tailwind override */
+.progress-fill {
+    transition: width 0.4s ease-out;
+}
