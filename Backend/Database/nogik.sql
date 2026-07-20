@@ -109,6 +109,7 @@ CREATE TABLE `class_materials` (
 CREATE TABLE `class_attendees` (
   `class_id` VARCHAR(50) NOT NULL,
   `student_id` VARCHAR(50) NOT NULL,
+  `status` ENUM('pending', 'approved') DEFAULT 'pending',
   PRIMARY KEY (`class_id`, `student_id`),
   FOREIGN KEY (`class_id`) REFERENCES `classes` (`id`) ON DELETE CASCADE,
   FOREIGN KEY (`student_id`) REFERENCES `students` (`user_id`) ON DELETE CASCADE

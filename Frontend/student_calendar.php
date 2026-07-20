@@ -269,18 +269,256 @@ render_sidebar();
             <div class="bg-primary/10 border border-primary/20 text-primary text-sm rounded-lg p-3">
                 Ya estás registrado en esta clase.
             </div>
-        <?php endif; ?>
+        <?php
+        // Persistencia de Vista y Fecha del Calendario
+        if (isset($_GET['view'])) {
+            $view = $_GET['view'];
+            $_SESSION['classes_view_mode'] = $view;
+            setcookie('classes_view_mode', $view, time() + (86400 * 30), '/');
+        } else {
+            $view = $_SESSION['classes_view_mode'] ?? $_COOKIE['classes_view_mode'] ?? 'calendar';
+        }
 
-        <!-- Layout Tabs -->
-        <div class="space-y-6">
-            <!-- Tabs Headers -->
-            <div class="flex border-b border-border">
-                <button onclick="switchTab('upcoming')" id="tab-btn-upcoming" class="tab-btn border-b-2 border-primary text-primary px-4 py-2 text-sm font-semibold focus:outline-none">
-                    Próximas Clases (<?php echo count($upcoming_classes); ?>)
-                </button>
-                <button onclick="switchTab('past')" id="tab-btn-past" class="tab-btn text-muted-foreground border-b-2 border-transparent hover:text-foreground px-4 py-2 text-sm font-semibold focus:outline-none">
-                    Clases Completadas / Historial (<?php echo count($past_classes); ?>)
-                </button>
+        if ($view === 'calendar'):
+            // Calendar math
+            if (isset($_GET['month'])) {
+                $month = intval($_GET['month']);
+                $_SESSION['calendar_month'] = $month;
+                setcookie('calendar_month', $month, time() + (86400 * 30), '/');
+            } else {
+                $month = $_SESSION['calendar_month'] ?? $_COOKIE['calendar_month'] ?? intval(date('m'));
+            }
+
+            if (isset($_GET['year'])) {
+                $year = intval($_GET['year']);
+                $_SESSION['calendar_year'] = $year;
+                setcookie('calendar_year', $year, time() + (86400 * 30), '/');
+            } else {
+                $year = $_SESSION['calendar_year'] ?? $_COOKIE['calendar_year'] ?? intval(date('Y'));
+            }
+
+            $prev_month = $month - 1;
+            $prev_year = $year;
+            if ($prev_month < 1) {
+                $prev_month = 12;
+                $prev_year--;
+            }
+            $next_month = $month + 1;
+            $next_year = $year;
+            if ($next_month > 12) {
+                $next_month = 1;
+                $next_year++;
+            }
+
+            $first_day_ts = @mktime(0, 0, 0, $month, 1, $year);
+            $first_day_of_week = intval(date('w', $first_day_ts)); // 0 = Sunday
+            $days_in_month = intval(date('t', $first_day_ts));
+
+            $prev_month_ts = @mktime(0, 0, 0, $prev_month, 1, $prev_year);
+            $days_in_prev_month = intval(date('t', $prev_month_ts));
+
+            $grid_cells = [];
+            for ($i = $first_day_of_week - 1; $i >= 0; $i--) {
+                $day_num = $days_in_prev_month - $i;
+                $grid_cells[] = [
+                    'day' => $day_num,
+                    'month' => $prev_month,
+                    'year' => $prev_year,
+                    'current_month' => false,
+                    'date_string' => sprintf('%04d-%02d-%02d', $prev_year, $prev_month, $day_num)
+                ];
+            }
+            for ($day_num = 1; $day_num <= $days_in_month; $day_num++) {
+                $grid_cells[] = [
+                    'day' => $day_num,
+                    'month' => $month,
+                    'year' => $year,
+                    'current_month' => true,
+                    'date_string' => sprintf('%04d-%02d-%02d', $year, $month, $day_num)
+                ];
+            }
+            $cells_left = 42 - count($grid_cells);
+            for ($day_num = 1; $day_num <= $cells_left; $day_num++) {
+                $grid_cells[] = [
+                    'day' => $day_num,
+                    'month' => $next_month,
+                    'year' => $next_year,
+                    'current_month' => false,
+                    'date_string' => sprintf('%04d-%02d-%02d', $next_year, $next_month, $day_num)
+                ];
+            }
+
+            $classes_by_date = [];
+            foreach ($classes as $cl) {
+                $cl_date_only = date('Y-m-d', strtotime($cl['class_date']));
+                $classes_by_date[$cl_date_only][] = $cl;
+            }
+        ?>
+            <!-- Calendar Navigation Header -->
+            <div class="flex items-center justify-between bg-card border border-border/50 rounded-xl p-4">
+                <div class="flex items-center gap-3">
+                    <a href="?view=calendar&month=<?php echo $prev_month; ?>&year=<?php echo $prev_year; ?>" class="p-2 hover:bg-muted/40 rounded-lg border border-border text-foreground transition-colors">
+                        <i data-lucide="chevron-left" class="h-4 w-4"></i>
+                    </a>
+                    <div class="relative inline-block text-left" id="datepicker-container">
+                        <button onclick="toggleDatePickerPopover()" class="flex items-center gap-1.5 text-lg font-bold text-foreground hover:text-primary transition-colors focus:outline-none py-1 px-2 rounded-lg hover:bg-muted/20">
+                            <span class="capitalize">
+                                <?php 
+                                $months_es = [1=>'Enero', 2=>'Febrero', 3=>'Marzo', 4=>'Abril', 5=>'Mayo', 6=>'Junio', 7=>'Julio', 8=>'Agosto', 9=>'Septiembre', 10=>'Octubre', 11=>'Noviembre', 12=>'Diciembre'];
+                                echo $months_es[$month] . ' ' . $year; 
+                                ?>
+                            </span>
+                            <i data-lucide="chevron-down" class="h-4 w-4"></i>
+                        </button>
+                        
+                        <!-- Popover Datepicker -->
+                        <div id="datepicker-popover" onclick="event.stopPropagation()" class="hidden absolute left-0 mt-2 z-50 w-72 bg-card border border-border rounded-xl p-4 shadow-2xl space-y-4">
+                            <!-- Popover Header -->
+                            <div class="flex items-center justify-between gap-2 border-b border-border/30 pb-3">
+                                <div class="flex items-center gap-1.5 flex-1">
+                                    <select id="popover-month-select" onchange="onPopoverSelectChange()" class="bg-muted hover:bg-muted/70 border border-border text-foreground font-bold text-xs px-2 py-1 rounded-lg focus:outline-none cursor-pointer flex-1">
+                                        <option value="1">Enero</option>
+                                        <option value="2">Febrero</option>
+                                        <option value="3">Marzo</option>
+                                        <option value="4">Abril</option>
+                                        <option value="5">Mayo</option>
+                                        <option value="6">Junio</option>
+                                        <option value="7">Julio</option>
+                                        <option value="8">Agosto</option>
+                                        <option value="9">Septiembre</option>
+                                        <option value="10">Octubre</option>
+                                        <option value="11">Noviembre</option>
+                                        <option value="12">Diciembre</option>
+                                    </select>
+                                    <select id="popover-year-select" onchange="onPopoverSelectChange()" class="bg-muted hover:bg-muted/70 border border-border text-foreground font-bold text-xs px-2 py-1 rounded-lg focus:outline-none cursor-pointer w-20">
+                                    </select>
+                                </div>
+                                <div class="flex items-center gap-1 flex-shrink-0">
+                                    <button onclick="navigatePopoverMonth(-1)" title="Mes anterior" class="p-1 hover:bg-muted/40 rounded-lg border border-border/50 text-foreground transition-colors">
+                                        <i data-lucide="chevron-left" class="h-3.5 w-3.5"></i>
+                                    </button>
+                                    <button onclick="navigatePopoverMonth(1)" title="Mes siguiente" class="p-1 hover:bg-muted/40 rounded-lg border border-border/50 text-foreground transition-colors">
+                                        <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Popover Weekdays -->
+                            <div class="grid grid-cols-7 gap-1 text-center font-bold text-[10px] text-muted-foreground uppercase">
+                                <div>D</div>
+                                <div>L</div>
+                                <div>M</div>
+                                <div>X</div>
+                                <div>J</div>
+                                <div>V</div>
+                                <div>S</div>
+                            </div>
+                            
+                            <!-- Popover Days Grid -->
+                            <div id="popover-days-grid" class="grid grid-cols-7 gap-1 text-center text-xs">
+                            </div>
+                        </div>
+                    </div>
+                    <a href="?view=calendar&month=<?php echo $next_month; ?>&year=<?php echo $next_year; ?>" class="p-2 hover:bg-muted/40 rounded-lg border border-border text-foreground transition-colors">
+                        <i data-lucide="chevron-right" class="h-4 w-4"></i>
+                    </a>
+                </div>
+                <div class="flex items-center gap-2">
+                    <a href="?view=list" class="bg-muted hover:bg-muted/70 text-foreground font-semibold px-3 py-1.5 rounded-lg text-xs transition-colors flex items-center gap-1.5">
+                        <i data-lucide="list" class="h-4 w-4"></i>
+                        Ver Lista
+                    </a>
+                </div>
+            </div>
+
+            <!-- Calendar Grid -->
+            <div class="space-y-2">
+                <div class="grid grid-cols-7 gap-1 text-center font-bold text-xs text-muted-foreground uppercase tracking-wider mb-2">
+                    <div>Dom</div>
+                    <div>Lun</div>
+                    <div>Mar</div>
+                    <div>Mié</div>
+                    <div>Jue</div>
+                    <div>Vie</div>
+                    <div>Sáb</div>
+                </div>
+                
+                <div class="grid grid-cols-7 gap-1 bg-border/20 border border-border/30 rounded-xl overflow-hidden">
+                    <?php foreach ($grid_cells as $cell): 
+                        $cell_classes = $classes_by_date[$cell['date_string']] ?? [];
+                        $is_today = $cell['date_string'] === date('Y-m-d');
+                        $is_current = $cell['current_month'];
+                        $has_classes = count($cell_classes) > 0;
+                        
+                        // Determinar color de fondo y bordes
+                        if (!$is_current) {
+                            $cell_bg = 'bg-[#0f1115]/50 opacity-40 hover:opacity-60';
+                        } else {
+                            if ($has_classes) {
+                                $cell_bg = 'bg-primary/[0.04] border border-primary/20 hover:bg-primary/[0.07]';
+                            } else {
+                                $cell_bg = 'bg-card hover:bg-muted/10';
+                            }
+                        }
+                    ?>
+                        <div class="min-h-[110px] p-2 flex flex-col justify-between border-t border-r border-border/30 last-of-type:border-r-0 transition-all cursor-pointer <?php echo $cell_bg; ?>" data-day-cell="<?php echo $cell['date_string']; ?>" onclick="selectCalendarDay('<?php echo $cell['date_string']; ?>')">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-xs font-bold <?php echo $is_current ? 'text-foreground' : 'text-muted-foreground/35'; ?> <?php echo $is_today ? 'bg-primary text-primary-foreground h-5 w-5 rounded-full flex items-center justify-center' : ''; ?>">
+                                    <?php echo $cell['day']; ?>
+                                </span>
+                                <?php if ($has_classes): ?>
+                                    <span class="h-2 w-2 rounded-full bg-primary animate-pulse"></span>
+                                <?php endif; ?>
+                            </div>
+                            
+                            <div class="flex-1 space-y-1 overflow-y-auto max-h-[80px] custom-scrollbar">
+                                <?php foreach ($cell_classes as $cl): 
+                                    $cl_time = new DateTime($cl['class_date']);
+                                    $cl_end = clone $cl_time;
+                                    $cl_end->modify('+' . intval($cl['duration']) . ' minutes');
+                                    $horario = $cl_time->format('H:i') . '-' . $cl_end->format('H:i');
+                                    $color_class = $cl['status'] === 'completed' ? 'bg-success/10 border-success/30 text-success' : 'bg-primary/10 border-primary/20 text-primary';
+                                ?>
+                                    <div class="text-[10px] p-1 border rounded truncate font-medium transition-all hover:scale-[1.02] <?php echo $color_class; ?>" 
+                                         onclick="event.stopPropagation(); openClassDetailModal(<?php echo htmlspecialchars(json_encode($cl)); ?>)">
+                                        <strong><?php echo $horario; ?></strong> <?php echo htmlspecialchars($cl['title']); ?>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+
+            <!-- Selected Day Panel -->
+            <div id="selected-day-panel" class="hidden bg-card border border-border/50 rounded-xl p-6 mt-6 space-y-4">
+                <div class="flex items-center justify-between border-b border-border pb-3">
+                    <h3 class="font-bold text-base text-foreground flex items-center gap-2">
+                        <i data-lucide="calendar-days" class="h-5 w-5 text-primary"></i>
+                        Clases para el <span id="selected-day-title"></span>
+                    </h3>
+                    <button onclick="closeSelectedDayPanel()" class="text-xs text-muted-foreground hover:text-foreground">Cerrar</button>
+                </div>
+                
+                <div id="selected-day-classes" class="grid gap-3">
+                </div>
+            </div>
+
+        <?php else: ?>
+            <!-- Layout Tabs (Lista) -->
+            <div class="flex items-center justify-between border-b border-border flex-wrap gap-4">
+                <div class="flex">
+                    <button onclick="switchTab('upcoming')" id="tab-btn-upcoming" class="tab-btn border-b-2 border-primary text-primary px-4 py-2 text-sm font-semibold focus:outline-none">
+                        Próximas Clases (<?php echo count($upcoming_classes); ?>)
+                    </button>
+                    <button onclick="switchTab('past')" id="tab-btn-past" class="tab-btn text-muted-foreground border-b-2 border-transparent hover:text-foreground px-4 py-2 text-sm font-semibold focus:outline-none">
+                        Historial / Completadas (<?php echo count($past_classes); ?>)
+                    </button>
+                </div>
+                <a href="?view=calendar" class="bg-muted hover:bg-muted/70 text-foreground font-semibold px-3 py-1.5 rounded-lg text-xs transition-colors flex items-center gap-1.5 mb-2">
+                    <i data-lucide="calendar" class="h-4 w-4"></i>
+                    Ver Calendario
+                </a>
             </div>
 
             <!-- Tab: Upcoming -->
@@ -443,26 +681,370 @@ render_sidebar();
                     </div>
                 <?php endif; ?>
             </div>
+            
+            <script>
+            function switchTab(tabId) {
+                document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+                document.getElementById('tab-content-' + tabId).classList.remove('hidden');
+                
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('border-primary', 'text-primary');
+                    btn.classList.add('text-muted-foreground', 'border-transparent');
+                });
+                
+                const activeBtn = document.getElementById('tab-btn-' + tabId);
+                activeBtn.classList.remove('text-muted-foreground', 'border-transparent');
+                activeBtn.classList.add('border-primary', 'text-primary');
+            }
+            </script>
+        <?php endif; ?>
+
+        <!-- Modal de Ampliación de Clase -->
+        <div id="classDetailModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300 opacity-0" onclick="event.target.id === 'classDetailModal' && closeClassDetailModal()">
+            <div class="bg-card border border-border rounded-xl w-full max-w-lg p-6 shadow-2xl space-y-4 relative transform scale-95 opacity-0 transition-all duration-300">
+                <button onclick="closeClassDetailModal()" class="absolute top-4 right-4 text-muted-foreground hover:text-foreground">
+                    <i data-lucide="x" class="h-5 w-5"></i>
+                </button>
+                
+                <div class="space-y-1.5">
+                    <div class="flex items-center gap-2">
+                        <span id="modal-detail-status" class="text-3xs font-semibold px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full"></span>
+                        <span id="modal-detail-duration" class="text-xs text-muted-foreground"></span>
+                    </div>
+                    <h2 id="modal-detail-title" class="text-xl font-extrabold text-foreground"></h2>
+                    <p id="modal-detail-time" class="text-xs text-primary font-semibold"></p>
+                </div>
+                
+                <div class="space-y-2 border-t border-border/30 pt-4">
+                    <h4 class="text-xs font-bold text-foreground uppercase tracking-wider">Descripción</h4>
+                    <p id="modal-detail-desc" class="text-xs text-muted-foreground leading-relaxed"></p>
+                </div>
+                
+                <div class="flex items-center justify-end gap-3 border-t border-border/30 pt-4 mt-6">
+                    <button onclick="closeClassDetailModal()" class="bg-muted/40 hover:bg-muted/65 border border-border text-foreground font-semibold px-4 py-2 rounded-lg text-xs transition-colors">
+                        Cerrar
+                    </button>
+                    <a id="modal-detail-link" class="bg-primary text-primary-foreground font-bold px-4 py-2 rounded-lg text-xs hover:bg-primary/95 transition-colors flex items-center gap-1.5 shadow-lg shadow-primary/10">
+                        <span>Ver Detalles completos</span>
+                        <i data-lucide="arrow-right" class="h-3.5 w-3.5"></i>
+                    </a>
+                </div>
+            </div>
         </div>
 
-    </div>
-</div>
+        <script>
+        const allProjectClasses = <?php echo json_encode($classes); ?>;
 
-<script>
-    function switchTab(tabId) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-        document.getElementById('tab-content-' + tabId).classList.remove('hidden');
+        function selectCalendarDay(dateString) {
+            const dayClasses = allProjectClasses.filter(cl => {
+                const clDate = (cl.class_date || cl.date).split(' ')[0];
+                return clDate === dateString;
+            });
+            
+            const panel = document.getElementById('selected-day-panel');
+            const titleEl = document.getElementById('selected-day-title');
+            const listEl = document.getElementById('selected-day-classes');
+            
+            const parts = dateString.split('-');
+            const formattedDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+            titleEl.textContent = formattedDate;
+            
+            listEl.innerHTML = '';
+            
+            // Highlight selected day cell in the calendar grid
+            activeSelectedDay = dateString;
+            document.querySelectorAll('[data-day-cell]').forEach(el => {
+                el.classList.remove('ring-2', 'ring-primary', 'border-primary', 'z-10');
+            });
+            const selectedCell = document.querySelector(`[data-day-cell="${dateString}"]`);
+            if (selectedCell) {
+                selectedCell.classList.add('ring-2', 'ring-primary', 'border-primary', 'z-10');
+            }
+            
+            if (dayClasses.length === 0) {
+                listEl.innerHTML = `
+                    <div class="text-center py-6 text-muted-foreground text-sm">
+                        No hay clases programadas para este día.
+                    </div>
+                `;
+            } else {
+                dayClasses.forEach(cl => {
+                    const timeStr = cl.class_date || cl.date;
+                    
+                    // Parse starting date safely
+                    const dateParts = timeStr.split(' ')[0].split('-');
+                    const timeParts = timeStr.split(' ')[1].split(':');
+                    const dateObj = new Date(
+                        parseInt(dateParts[0]),
+                        parseInt(dateParts[1]) - 1,
+                        parseInt(dateParts[2]),
+                        parseInt(timeParts[0]),
+                        parseInt(timeParts[1])
+                    );
+                    
+                    const durationMin = parseInt(cl.duration || 0);
+                    const endDateObj = new Date(dateObj.getTime() + durationMin * 60000);
+                    
+                    const formatTime = (d) => {
+                        const h = String(d.getHours()).padStart(2, '0');
+                        const m = String(d.getMinutes()).padStart(2, '0');
+                        return `${h}:${m}`;
+                    };
+                    const horarioStr = `${formatTime(dateObj)} - ${formatTime(endDateObj)} hs`;
+                    
+                    const statusBadge = cl.status === 'completed' 
+                        ? '<span class="text-3xs font-semibold px-2 py-0.5 bg-success/15 border border-success/30 text-success rounded-full">Completada</span>'
+                        : '<span class="text-3xs font-semibold px-2 py-0.5 bg-primary/15 border border-primary/20 text-primary rounded-full">Próxima</span>';
+                        
+                    const card = document.createElement('div');
+                    card.className = 'bg-muted/10 border border-border/30 rounded-xl p-4 flex items-center justify-between hover:border-primary/20 cursor-pointer transition-all';
+                    card.onclick = () => openClassDetailModal(cl);
+                    card.innerHTML = `
+                        <div class="flex items-center gap-4">
+                            <div class="text-sm font-bold text-primary">${horarioStr}</div>
+                            <div>
+                                <h4 class="text-sm font-bold text-foreground flex items-center gap-2">
+                                    ${cl.title}
+                                    ${statusBadge}
+                                </h4>
+                                <p class="text-xs text-muted-foreground mt-0.5">${cl.description}</p>
+                            </div>
+                        </div>
+                        <div class="text-xs text-muted-foreground flex items-center gap-1">
+                            <span>Ampliar</span>
+                            <i data-lucide="maximize-2" class="h-3.5 w-3.5"></i>
+                        </div>
+                    `;
+                    listEl.appendChild(card);
+                });
+            }
+            
+            panel.classList.remove('hidden');
+            lucide.createIcons();
+            panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function closeSelectedDayPanel() {
+            document.getElementById('selected-day-panel').classList.add('hidden');
+            // Remove selection highlight when closing the panel
+            document.querySelectorAll('[data-day-cell]').forEach(el => {
+                el.classList.remove('ring-2', 'ring-primary', 'border-primary', 'z-10');
+            });
+        }
+
+        function openClassDetailModal(classObj) {
+            document.getElementById('modal-detail-title').textContent = classObj.title;
+            document.getElementById('modal-detail-desc').textContent = classObj.description;
+            
+            const dateObj = new Date(classObj.class_date || classObj.date);
+            const dateStr = dateObj.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) + ' hs';
+            document.getElementById('modal-detail-time').textContent = dateStr;
+            document.getElementById('modal-detail-duration').textContent = classObj.duration + ' minutos';
+            
+            const statusEl = document.getElementById('modal-detail-status');
+            statusEl.textContent = classObj.status === 'completed' ? 'Completada' : 'Próxima';
+            if (classObj.status === 'completed') {
+                statusEl.className = 'text-3xs font-semibold px-2 py-0.5 bg-success/15 text-success border border-success/30 rounded-full capitalize';
+            } else {
+                statusEl.className = 'text-3xs font-semibold px-2 py-0.5 bg-primary/15 text-primary border border-primary/20 rounded-full capitalize';
+            }
+            
+            const linkEl = document.getElementById('modal-detail-link');
+            const currentFile = window.location.pathname.split('/').pop();
+            linkEl.href = currentFile + '?class_id=' + classObj.id;
+            
+            const modalEl = document.getElementById('classDetailModal');
+            modalEl.classList.remove('hidden');
+            modalEl.classList.add('flex');
+            
+            // Trigger transition with a tiny timeout
+            setTimeout(() => {
+                modalEl.classList.remove('opacity-0');
+                modalEl.classList.add('opacity-100');
+                
+                const panel = modalEl.querySelector('.bg-card');
+                if (panel) {
+                    panel.classList.remove('scale-95', 'opacity-0');
+                    panel.classList.add('scale-100', 'opacity-100');
+                }
+            }, 20);
+        }
+
+        function closeClassDetailModal() {
+            const modalEl = document.getElementById('classDetailModal');
+            modalEl.classList.remove('opacity-100');
+            modalEl.classList.add('opacity-0');
+            
+            const panel = modalEl.querySelector('.bg-card');
+            if (panel) {
+                panel.classList.remove('scale-100', 'opacity-100');
+                panel.classList.add('scale-95', 'opacity-0');
+            }
+            
+            setTimeout(() => {
+                modalEl.classList.remove('flex');
+                modalEl.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- SISTEMA DE DATEPICKER POPOVER ---
+        let popoverMonth = <?php echo $month; ?>;
+        let popoverYear = <?php echo $year; ?>;
+        const currentSelectedMonth = <?php echo $month; ?>;
+        const currentSelectedYear = <?php echo $year; ?>;
+        let activeSelectedDay = '<?php echo $_GET["select_date"] ?? ""; ?>';
         
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('border-primary', 'text-primary');
-            btn.classList.add('text-muted-foreground', 'border-transparent');
+        function toggleDatePickerPopover() {
+            const popover = document.getElementById('datepicker-popover');
+            if (popover.classList.contains('hidden')) {
+                popoverMonth = currentSelectedMonth;
+                popoverYear = currentSelectedYear;
+                
+                // Populate year select once
+                const yearSelect = document.getElementById('popover-year-select');
+                if (yearSelect && yearSelect.options.length === 0) {
+                    const startYear = 2020;
+                    const endYear = 2035;
+                    for (let y = startYear; y <= endYear; y++) {
+                        const opt = document.createElement('option');
+                        opt.value = y;
+                        opt.textContent = y;
+                        yearSelect.appendChild(opt);
+                    }
+                }
+                
+                renderPopoverCalendar();
+                popover.classList.remove('hidden');
+                lucide.createIcons();
+            } else {
+                popover.classList.add('hidden');
+            }
+        }
+        
+        // Close popover when clicking outside
+        document.addEventListener('click', (e) => {
+            const container = document.getElementById('datepicker-container');
+            const popover = document.getElementById('datepicker-popover');
+            
+            // Si el elemento clickeado ya no está en el documento (por ejemplo, reconstruido en JS), ignoramos
+            if (!document.contains(e.target)) return;
+            
+            if (container && !container.contains(e.target) && popover && !popover.classList.contains('hidden')) {
+                popover.classList.add('hidden');
+            }
         });
         
-        const activeBtn = document.getElementById('tab-btn-' + tabId);
-        activeBtn.classList.remove('text-muted-foreground', 'border-transparent');
-        activeBtn.classList.add('border-primary', 'text-primary');
-    }
-</script>
+        function onPopoverSelectChange() {
+            popoverMonth = parseInt(document.getElementById('popover-month-select').value);
+            popoverYear = parseInt(document.getElementById('popover-year-select').value);
+            renderPopoverCalendar();
+            lucide.createIcons();
+        }
+        
+        function navigatePopoverMonth(direction) {
+            popoverMonth += direction;
+            if (popoverMonth < 1) {
+                popoverMonth = 12;
+                popoverYear--;
+            } else if (popoverMonth > 12) {
+                popoverMonth = 1;
+                popoverYear++;
+            }
+            renderPopoverCalendar();
+            lucide.createIcons();
+        }
+        
+        function renderPopoverCalendar() {
+            // Update selected values in select elements
+            const monthSelect = document.getElementById('popover-month-select');
+            const yearSelect = document.getElementById('popover-year-select');
+            if (monthSelect) monthSelect.value = popoverMonth;
+            if (yearSelect) yearSelect.value = popoverYear;
+            
+            const grid = document.getElementById('popover-days-grid');
+            grid.innerHTML = '';
+            
+            const firstDayTs = new Date(popoverYear, popoverMonth - 1, 1);
+            let firstDayOfWeek = firstDayTs.getDay(); // 0 = Sunday
+            const daysInMonth = new Date(popoverYear, popoverMonth, 0).getDate();
+            const daysInPrevMonth = new Date(popoverYear, popoverMonth - 1, 0).getDate();
+            
+            // Previous month trailing days
+            for (let i = firstDayOfWeek - 1; i >= 0; i--) {
+                const dayNum = daysInPrevMonth - i;
+                const prevM = popoverMonth === 1 ? 12 : popoverMonth - 1;
+                const prevY = popoverMonth === 1 ? popoverYear - 1 : popoverYear;
+                const dateStr = `${prevY}-${String(prevM).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+                
+                const dayEl = document.createElement('button');
+                dayEl.className = 'p-1 hover:bg-muted rounded text-muted-foreground/30 focus:outline-none transition-colors w-8 h-8 flex items-center justify-center mx-auto';
+                dayEl.textContent = dayNum;
+                dayEl.onclick = () => selectPopoverDate(dateStr, prevM, prevY);
+                grid.appendChild(dayEl);
+            }
+            
+            // Current month days
+            for (let dayNum = 1; dayNum <= daysInMonth; dayNum++) {
+                const dateStr = `${popoverYear}-${String(popoverMonth).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+                
+                const dayEl = document.createElement('button');
+                dayEl.textContent = dayNum;
+                
+                let btnClass = 'p-1 hover:bg-muted rounded text-foreground font-semibold focus:outline-none transition-colors w-8 h-8 flex items-center justify-center mx-auto';
+                
+                // Highlight today or active select
+                const cellClasses = allProjectClasses.filter(cl => (cl.class_date || cl.date).split(' ')[0] === dateStr);
+                const hasClasses = cellClasses.length > 0;
+                
+                if (hasClasses) {
+                    btnClass += ' text-primary bg-primary/10 border border-primary/20';
+                }
+                
+                if (dateStr === activeSelectedDay) {
+                    btnClass = 'p-1 bg-primary text-primary-foreground rounded-full font-bold scale-105 shadow-lg shadow-primary/20 focus:outline-none w-8 h-8 flex items-center justify-center mx-auto';
+                }
+                
+                dayEl.className = btnClass;
+                dayEl.onclick = () => selectPopoverDate(dateStr, popoverMonth, popoverYear);
+                grid.appendChild(dayEl);
+            }
+            
+            // Next month days to fill 42 cells grid
+            const totalCellsUsed = firstDayOfWeek + daysInMonth;
+            const cellsLeft = 42 - totalCellsUsed;
+            for (let dayNum = 1; dayNum <= cellsLeft; dayNum++) {
+                const nextM = popoverMonth === 12 ? 1 : popoverMonth + 1;
+                const nextY = popoverMonth === 12 ? popoverYear + 1 : popoverYear;
+                const dateStr = `${nextY}-${String(nextM).padStart(2, '0')}-${String(dayNum).padStart(2, '0')}`;
+                
+                const dayEl = document.createElement('button');
+                dayEl.className = 'p-1 hover:bg-muted rounded text-muted-foreground/30 focus:outline-none transition-colors w-8 h-8 flex items-center justify-center mx-auto';
+                dayEl.textContent = dayNum;
+                dayEl.onclick = () => selectPopoverDate(dateStr, nextM, nextY);
+                grid.appendChild(dayEl);
+            }
+        }
+        
+        function selectPopoverDate(dateStr, m, y) {
+            document.getElementById('datepicker-popover').classList.add('hidden');
+            if (m !== currentSelectedMonth || y !== currentSelectedYear) {
+                window.location.href = `?view=calendar&month=${m}&year=${y}&select_date=${dateStr}`;
+            } else {
+                selectCalendarDay(dateStr);
+            }
+        }
+
+        // Trigger selection on load if parameter is present
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const selectDate = urlParams.get('select_date');
+            if (selectDate) {
+                selectCalendarDay(selectDate);
+            }
+        });
+        </script>
+    </div>
+</div>
 
 <?php
 render_footer();
