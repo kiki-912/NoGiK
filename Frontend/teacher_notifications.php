@@ -32,7 +32,7 @@ $stmt_events = $pdo->prepare("
 $stmt_events->execute();
 $pending_events = $stmt_events->fetchAll();
 
-render_header("Notificaciones - NogiK");
+render_header("Notificaciones - NoGiK");
 render_sidebar();
 ?>
 

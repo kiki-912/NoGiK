@@ -1,6 +1,6 @@
 <?php
 // Backend/db.php
-// Sistema de persistencia dual para NogiK (MySQL con fallback automático a JSON)
+// Sistema de persistencia dual para NoGiK (MySQL con fallback automático a JSON)
 
 $db_host = 'localhost';
 $db_user = 'root';

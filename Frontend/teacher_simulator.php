@@ -71,7 +71,7 @@ $total_events = count($events);
 $total_pending = count($pending_parts);
 $total_evaluated = count($evaluated_parts);
 
-render_header("Simulador de Carrera - NogiK");
+render_header("Simulador de Carrera - NoGiK");
 render_sidebar();
 ?>
 

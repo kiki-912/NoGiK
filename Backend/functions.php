@@ -63,7 +63,7 @@ function render_sidebar($user) {
     echo '<circle cx="12" cy="12" r="2" fill="var(--cyan)" />';
     echo '<circle cx="12" cy="12" r="4" stroke-dasharray="2 3" />';
     echo '</svg>';
-    echo '<div><strong>NogiK</strong><small>'.($role === 'teacher' ? 'Profesor' : 'Alumno').'</small></div></div>';
+    echo '<div><strong>NoGiK</strong><small>'.($role === 'teacher' ? 'Profesor' : 'Alumno').'</small></div></div>';
     echo '<div class="side-section"><small>Navegación</small><nav>';
     if ($role === 'student') $links = ['student'=>['Dashboard','layout'], 'skills'=>['Habilidades','radio'], 'sets'=>['Mis sets','play'], 'calendar'=>['Clases','calendar'], 'simulator'=>['Simulador','radio'], 'community'=>['Comunidad','users']];
     else $links = ['teacher'=>['Dashboard','layout'], 'students'=>['Alumnos','graduation'], 'classes'=>['Clases','calendar'], 'evaluations'=>['Evaluaciones','clipboard'], 'simulator'=>['Simulador','radio']];

@@ -16,7 +16,7 @@ if ($create) {
     $stmt_s->execute();
     $skills = $stmt_s->fetchAll();
     
-    render_header("Programar Clase - NogiK");
+    render_header("Programar Clase - NoGiK");
     render_sidebar();
     ?>
     <div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
@@ -262,7 +262,7 @@ if (!empty($class_id)) {
     
     $cl_date = new DateTime($class_details['class_date']);
     
-    render_header("Detalle de Clase - NogiK");
+    render_header("Detalle de Clase - NoGiK");
     render_sidebar();
     ?>
     <div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
@@ -507,7 +507,7 @@ function render_classes_list($classes_list, $pdo) {
     <?php
 }
 
-render_header("Clases - NogiK");
+render_header("Clases - NoGiK");
 render_sidebar();
 ?>
 

@@ -83,7 +83,7 @@ $stmt_recent_evals = $pdo->prepare("
 $stmt_recent_evals->execute([$teacher['id']]);
 $recent_evaluations = $stmt_recent_evals->fetchAll();
 
-render_header("Panel de Profesor - NogiK");
+render_header("Panel de Profesor - NoGiK");
 render_sidebar();
 ?>
 

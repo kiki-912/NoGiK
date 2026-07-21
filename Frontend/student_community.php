@@ -30,7 +30,7 @@ $success = $_GET['success'] ?? '';
 ?>
 
 <?php
-render_header("Comunidad - NogiK");
+render_header("Comunidad - NoGiK");
 render_sidebar();
 ?>
 

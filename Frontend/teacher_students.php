@@ -73,7 +73,7 @@ if (!empty($id)) {
     $stmt_cl->execute([$id]);
     $attended_classes = $stmt_cl->fetchAll();
     
-    render_header("Detalle de Alumno - NogiK");
+    render_header("Detalle de Alumno - NoGiK");
     render_sidebar();
     ?>
     <div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
@@ -407,7 +407,7 @@ $stmt = $pdo->prepare("
 $stmt->execute();
 $students = $stmt->fetchAll();
 
-render_header("Alumnos - NogiK");
+render_header("Alumnos - NoGiK");
 render_sidebar();
 ?>
 

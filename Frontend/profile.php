@@ -16,7 +16,7 @@ if (preg_match('/seed=([^&]+)/', $user['avatar'], $matches)) {
     $is_custom_avatar = false;
 }
 
-render_header("Mi Perfil y Configuración - NogiK");
+render_header("Mi Perfil y Configuración - NoGiK");
 render_sidebar();
 ?>
 
@@ -236,7 +236,7 @@ function updateAvatarPreview() {
     if (!previewImg) return;
     
     // Construct new Dicebear url
-    const seedParam = encodeURIComponent(seed || 'NogiK');
+    const seedParam = encodeURIComponent(seed || 'NoGiK');
     previewImg.src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seedParam}`;
 }
 

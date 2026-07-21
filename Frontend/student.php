@@ -47,7 +47,7 @@ $recent_sets = $stmt_recent_sets->fetchAll();
 
 $tier = get_reputation_tier($student['reputation']);
 
-render_header("Dashboard - NogiK");
+render_header("Dashboard - NoGiK");
 render_sidebar();
 ?>
 

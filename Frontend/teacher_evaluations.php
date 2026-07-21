@@ -70,7 +70,7 @@ if (!empty($set_id)) {
     $active_tab = 'events';
 }
 
-render_header("Evaluaciones Pendientes - NogiK");
+render_header("Evaluaciones Pendientes - NoGiK");
 render_sidebar();
 ?>
 

@@ -1,5 +1,5 @@
 <?php
-// NogiK - Authentication & Layout Utilities
+// NoGiK - Authentication & Layout Utilities
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
@@ -24,7 +24,7 @@ function render_db_setup_wizard() {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Configuración de Base de Datos - NogiK</title>
+    <title>Configuración de Base de Datos - NoGiK</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -58,7 +58,7 @@ function render_db_setup_wizard() {
         
         <div class="space-y-2">
             <h2 class="text-2xl font-extrabold text-foreground">Asistente de Base de Datos</h2>
-            <p class="text-xs text-muted">Configuración inicial de NogiK en tu servidor local</p>
+            <p class="text-xs text-muted">Configuración inicial de NoGiK en tu servidor local</p>
         </div>
 
         <div class="p-4 rounded-lg bg-black/20 border border-border/50 text-sm text-left space-y-3">
@@ -186,7 +186,7 @@ function require_role($role) {
 }
 
 // Render HTML header
-function render_header($title = "NogiK - Academia DJ") {
+function render_header($title = "NoGiK - Academia DJ") {
     ob_start();
     $user = get_current_user_details();
     ?>
@@ -196,6 +196,8 @@ function render_header($title = "NogiK - Academia DJ") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($title); ?></title>
+    <?php $prefix = (basename($_SERVER['PHP_SELF']) === 'index.php') ? '' : '../'; ?>
+    <link rel="icon" type="image/svg+xml" href="<?php echo $prefix; ?>favicon.svg?v=2">
     
     <!-- Instant Theme Setter to prevent flashing -->
     <script>
@@ -317,7 +319,7 @@ function render_sidebar() {
                 </div>
                 <div class="flex flex-col">
                     <span class="font-bold text-lg leading-none">
-                        <span class="text-primary">Nogi</span><span class="text-foreground">K</span>
+                        <span class="text-primary">NoGi</span><span class="text-foreground">K</span>
                     </span>
                     <span class="text-xs text-muted-foreground mt-1">
                         <?php echo $is_student ? 'Estudiante' : 'Profesor'; ?>

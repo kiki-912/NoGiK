@@ -1,5 +1,5 @@
 <?php
-// NogiK - Backend Action Processor
+// NoGiK - Backend Action Processor
 require_once __DIR__ . '/auth.php';
 require_once __DIR__ . '/db.php';
 

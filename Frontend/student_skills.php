@@ -31,7 +31,7 @@ $skillIcons = [
     'radio' => 'radio'
 ];
 
-render_header("Mis Habilidades - NogiK");
+render_header("Mis Habilidades - NoGiK");
 render_sidebar();
 ?>
 

@@ -30,7 +30,7 @@ if (!empty($id)) {
     $stmt_comm->execute([$id]);
     $comments = $stmt_comm->fetchAll();
     
-    render_header("Detalle de Set - NogiK");
+    render_header("Detalle de Set - NoGiK");
     render_sidebar();
     ?>
     <div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
@@ -227,7 +227,7 @@ if (!empty($id)) {
 
 // UPLOAD FORM VIEW
 if ($upload) {
-    render_header("Subir Set - NogiK");
+    render_header("Subir Set - NoGiK");
     render_sidebar();
     ?>
     <div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
@@ -420,7 +420,7 @@ $filtered_sets = $sets;
 if ($active_tab === 'evaluated') $filtered_sets = $evaluated;
 if ($active_tab === 'pending') $filtered_sets = $pending;
 
-render_header("Mis Sets - NogiK");
+render_header("Mis Sets - NoGiK");
 render_sidebar();
 ?>
 

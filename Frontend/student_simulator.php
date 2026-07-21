@@ -78,7 +78,7 @@ if (!empty($id)) {
         $eval = $stmt_eval->fetch();
     }
     
-    render_header("Detalle de Evento - NogiK");
+    render_header("Detalle de Evento - NoGiK");
     render_sidebar();
     ?>
     <div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
@@ -343,7 +343,7 @@ foreach ($participations as $p) {
     }
 }
 
-render_header("Simulador de Carrera - NogiK");
+render_header("Simulador de Carrera - NoGiK");
 render_sidebar();
 ?>
 

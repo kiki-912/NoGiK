@@ -1,5 +1,5 @@
 <?php
-// NogiK - Database Connector with Auto-detect and Graceful Recovery
+// NoGiK - Database Connector with Auto-detect and Graceful Recovery
 
 $host = 'localhost';
 $db   = 'nogik';

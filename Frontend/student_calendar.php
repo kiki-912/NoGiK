@@ -83,7 +83,7 @@ if (!empty($class_id)) {
     
     $cl_date = new DateTime($class_details['class_date']);
     
-    render_header("Detalle de Clase - NogiK");
+    render_header("Detalle de Clase - NoGiK");
     render_sidebar();
     ?>
     <div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
@@ -250,7 +250,7 @@ if (!empty($class_id)) {
     exit();
 }
 
-render_header("Calendario de Clases - NogiK");
+render_header("Calendario de Clases - NoGiK");
 render_sidebar();
 ?>
 

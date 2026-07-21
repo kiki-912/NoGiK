@@ -1,5 +1,5 @@
 <?php
-// NogiK - Logout Script
+// NoGiK - Logout Script
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }

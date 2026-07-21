@@ -16,8 +16,8 @@ $success = $_GET['success'] ?? '';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NogiK - Academia DJ</title>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <title>NoGiK - Academia DJ</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg?v=2">
     
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -81,7 +81,7 @@ $success = $_GET['success'] ?? '';
                                 <div class="absolute inset-0 bg-primary/20 blur-xl rounded-full"></div>
                             </div>
                             <h1 class="text-5xl font-bold tracking-tight">
-                                <span class="text-primary">Nogi</span><span class="text-foreground">K</span>
+                                <span class="text-primary">NoGi</span><span class="text-foreground">K</span>
                             </h1>
                         </div>
                         
@@ -116,7 +116,7 @@ $success = $_GET['success'] ?? '';
                         <div class="rounded-xl border border-border/50 bg-card/80 p-8 shadow-xl backdrop-blur-sm">
                             <div class="text-center mb-6">
                                 <h2 class="text-2xl font-bold text-foreground">Iniciar Sesión</h2>
-                                <p class="text-sm text-muted-foreground mt-1">Accede a tu cuenta de NogiK</p>
+                                <p class="text-sm text-muted-foreground mt-1">Accede a tu cuenta de NoGiK</p>
                             </div>
                             
                             <?php if (isset($_GET['success']) && $_GET['success'] === 'setup_complete'): ?>
@@ -240,7 +240,7 @@ $success = $_GET['success'] ?? '';
             <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
                 <div class="flex items-center gap-2">
                     <i data-lucide="disc-3" class="h-6 w-6 text-primary"></i>
-                    <span class="font-semibold text-foreground">NogiK</span>
+                    <span class="font-semibold text-foreground">NoGiK</span>
                 </div>
                 <p class="text-sm text-muted-foreground">
                     Plataforma de formación para DJs
