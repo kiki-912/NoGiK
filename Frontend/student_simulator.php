@@ -81,20 +81,26 @@ if (!empty($id)) {
     render_header("Detalle de Evento - NogiK");
     render_sidebar();
     ?>
-    <div class="flex-1 flex flex-col min-w-0 bg-background">
+    <div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
         <!-- Header -->
-        <header class="sticky top-0 z-10 flex items-center gap-4 border-b border-border bg-background/95 backdrop-blur px-6 py-4">
+        <header class="sticky top-0 z-40 flex flex-wrap items-center gap-4 gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground "><?php echo htmlspecialchars($event['name']); ?></h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">Detalle del evento y setlist</p>
+            </div>
+        </div>
             <a href="student_simulator.php" class="p-1.5 hover:bg-muted/30 rounded-lg text-muted-foreground hover:text-foreground">
                 <i data-lucide="arrow-left" class="h-5 w-5"></i>
             </a>
-            <div class="flex-1">
-                <h1 class="text-2xl font-bold text-foreground"><?php echo htmlspecialchars($event['name']); ?></h1>
-                <p class="text-sm text-muted-foreground">Detalle del evento y setlist</p>
-            </div>
+            
         </header>
 
         <!-- Content -->
-        <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+        <div class="p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
             
             <?php if ($error === 'invalid_participation'): ?>
                 <div class="bg-destructive/10 border border-destructive/20 text-destructive text-sm rounded-lg p-3">
@@ -162,33 +168,20 @@ if (!empty($id)) {
                 <div class="grid lg:grid-cols-3 gap-6">
                     <!-- Left: Tracks & Justification -->
                     <div class="lg:col-span-2 space-y-6">
-                        <!-- Setlist -->
+                        <!-- Setlist Link -->
                         <div class="bg-card border border-border/50 rounded-xl p-6 space-y-4">
                             <h4 class="font-bold text-base text-foreground flex items-center gap-2">
-                                <i data-lucide="list" class="h-5 w-5 text-primary"></i>
-                                Tu Setlist Presentado
+                                <i data-lucide="link" class="h-5 w-5 text-primary"></i>
+                                Enlace de tu Set
                             </h4>
                             
-                            <div class="space-y-2">
-                                <?php foreach ($tracks as $track): ?>
-                                    <div class="flex items-center justify-between p-3 rounded-lg bg-muted/20 border border-border/30">
-                                        <div class="flex items-center gap-3">
-                                            <span class="w-7 h-7 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center text-xs font-bold">
-                                                <?php echo $track['position']; ?>
-                                            </span>
-                                            <div>
-                                                <p class="font-bold text-sm text-foreground"><?php echo htmlspecialchars($track['track_name']); ?></p>
-                                                <p class="text-xs text-muted-foreground mt-0.5"><?php echo htmlspecialchars($track['artist']); ?></p>
-                                            </div>
-                                        </div>
-                                        <div class="text-right text-xs text-muted-foreground">
-                                            <span><?php echo $track['bpm']; ?> BPM</span>
-                                            <?php if (!empty($track['track_key'])): ?>
-                                                <span class="ml-2 px-1.5 py-0.5 bg-muted rounded text-3xs font-semibold"><?php echo htmlspecialchars($track['track_key']); ?></span>
-                                            <?php endif; ?>
-                                        </div>
+                            <div class="p-4 rounded-lg bg-muted/20 border border-border/30">
+                                <a href="<?php echo htmlspecialchars($part['set_url']); ?>" target="_blank" class="flex items-center gap-3 text-primary hover:text-primary/80 transition-colors font-medium break-all">
+                                    <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
+                                        <i data-lucide="external-link" class="h-5 w-5"></i>
                                     </div>
-                                <?php endforeach; ?>
+                                    <?php echo htmlspecialchars($part['set_url']); ?>
+                                </a>
                             </div>
                         </div>
 
@@ -283,52 +276,13 @@ if (!empty($id)) {
                         <div class="flex items-center justify-between border-b border-border pb-3">
                             <h3 class="font-bold text-base text-foreground flex items-center gap-2">
                                 <i data-lucide="music" class="h-5 w-5 text-primary"></i>
-                                Crea tu Setlist (Mínimo 3 Tracks)
+                                Enlace de tu Set
                             </h3>
-                            <button type="button" onclick="addTrackRow()" class="text-xs bg-primary text-primary-foreground font-semibold px-3 py-1.5 rounded-lg hover:bg-primary/95 transition-colors">
-                                + Agregar Track
-                            </button>
                         </div>
-                        
-                        <!-- Tracks container -->
-                        <div id="tracks-container" class="space-y-4">
-                            <!-- Track Row template -->
-                            <div class="track-row p-4 rounded-lg bg-muted/20 border border-border/30 space-y-3">
-                                <div class="flex items-center justify-between">
-                                    <span class="text-sm font-bold text-foreground flex items-center gap-2">
-                                        <span class="track-number w-5 h-5 rounded-full bg-primary/20 text-primary text-2xs flex items-center justify-center font-bold">1</span>
-                                        Track
-                                    </span>
-                                    <button type="button" onclick="removeTrackRow(this)" class="remove-btn text-destructive hover:bg-destructive/10 p-1.5 rounded-lg hidden">
-                                        <i data-lucide="trash-2" class="h-4 w-4"></i>
-                                    </button>
-                                </div>
-                                
-                                <div class="grid sm:grid-cols-2 gap-3">
-                                    <div class="space-y-1">
-                                        <label class="text-2xs font-semibold text-muted-foreground uppercase">Nombre del Track</label>
-                                        <input required name="track_name[]" placeholder="Ej: Sandstorm" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
-                                    </div>
-                                    <div class="space-y-1">
-                                        <label class="text-2xs font-semibold text-muted-foreground uppercase">Artista</label>
-                                        <input required name="artist[]" placeholder="Ej: Darude" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
-                                    </div>
-                                </div>
-                                <div class="grid grid-cols-3 gap-3">
-                                    <div class="space-y-1">
-                                        <label class="text-2xs font-semibold text-muted-foreground uppercase">BPM</label>
-                                        <input required name="bpm[]" type="number" min="50" max="250" value="128" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
-                                    </div>
-                                    <div class="space-y-1">
-                                        <label class="text-2xs font-semibold text-muted-foreground uppercase">Tonalidad (Key)</label>
-                                        <input required name="key[]" placeholder="Ej: 8A, Am" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
-                                    </div>
-                                    <div class="space-y-1">
-                                        <label class="text-2xs font-semibold text-muted-foreground uppercase">Notas de Mezcla</label>
-                                        <input name="notes[]" placeholder="Opcional" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="space-y-2">
+                            <label class="text-xs font-semibold text-muted-foreground uppercase">Link de SoundCloud, Mixcloud, YouTube, etc.</label>
+                            <input required type="url" name="set_url" placeholder="Ej: https://soundcloud.com/tu-usuario/tu-set" class="w-full bg-input border border-border rounded-lg px-4 py-3 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none transition-shadow">
+                            <p class="text-3xs text-muted-foreground mt-1">Asegúrate de que el enlace sea público para que el profesor pueda escucharlo.</p>
                         </div>
                     </div>
 
@@ -352,89 +306,6 @@ if (!empty($id)) {
 
         </div>
     </div>
-
-    <!-- Script for Dynamic Track Row Builder -->
-    <script>
-        function addTrackRow() {
-            const container = document.getElementById('tracks-container');
-            const rowCount = container.getElementsByClassName('track-row').length;
-            
-            // Create element
-            const newRow = document.createElement('div');
-            newRow.className = 'track-row p-4 rounded-lg bg-muted/20 border border-border/30 space-y-3';
-            newRow.innerHTML = `
-                <div class="flex items-center justify-between">
-                    <span class="text-sm font-bold text-foreground flex items-center gap-2">
-                        <span class="track-number w-5 h-5 rounded-full bg-primary/20 text-primary text-2xs flex items-center justify-center font-bold">${rowCount + 1}</span>
-                        Track
-                    </span>
-                    <button type="button" onclick="removeTrackRow(this)" class="remove-btn text-destructive hover:bg-destructive/10 p-1.5 rounded-lg">
-                        <i data-lucide="trash-2" class="h-4 w-4"></i>
-                    </button>
-                </div>
-                <div class="grid sm:grid-cols-2 gap-3">
-                    <div class="space-y-1">
-                        <label class="text-2xs font-semibold text-muted-foreground uppercase">Nombre del Track</label>
-                        <input required name="track_name[]" placeholder="Ej: Sandstorm" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-2xs font-semibold text-muted-foreground uppercase">Artista</label>
-                        <input required name="artist[]" placeholder="Ej: Darude" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
-                    </div>
-                </div>
-                <div class="grid grid-cols-3 gap-3">
-                    <div class="space-y-1">
-                        <label class="text-2xs font-semibold text-muted-foreground uppercase">BPM</label>
-                        <input required name="bpm[]" type="number" min="50" max="250" value="128" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-2xs font-semibold text-muted-foreground uppercase">Tonalidad (Key)</label>
-                        <input required name="key[]" placeholder="Ej: 8A, Am" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
-                    </div>
-                    <div class="space-y-1">
-                        <label class="text-2xs font-semibold text-muted-foreground uppercase">Notas de Mezcla</label>
-                        <input name="notes[]" placeholder="Opcional" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
-                    </div>
-                </div>
-            `;
-            
-            container.appendChild(newRow);
-            lucide.createIcons();
-            updateRemoveButtons();
-        }
-
-        function removeTrackRow(button) {
-            const row = button.closest('.track-row');
-            row.remove();
-            
-            // Recalculate numbers
-            const container = document.getElementById('tracks-container');
-            const rows = container.getElementsByClassName('track-row');
-            for (let i = 0; i < rows.length; i++) {
-                rows[i].querySelector('.track-number').innerText = i + 1;
-            }
-            updateRemoveButtons();
-        }
-
-        function updateRemoveButtons() {
-            const container = document.getElementById('tracks-container');
-            const rows = container.getElementsByClassName('track-row');
-            const removeButtons = container.getElementsByClassName('remove-btn');
-            
-            if (rows.length <= 1) {
-                removeButtons[0].classList.add('hidden');
-            } else {
-                for (let i = 0; i < removeButtons.length; i++) {
-                    removeButtons[i].classList.remove('hidden');
-                }
-            }
-        }
-        
-        document.addEventListener('DOMContentLoaded', () => {
-            // Initial check
-            updateRemoveButtons();
-        });
-    </script>
     <?php
     render_footer();
     exit();
@@ -477,17 +348,23 @@ render_sidebar();
 ?>
 
 <!-- Main Content Area -->
-<div class="flex-1 flex flex-col min-w-0 bg-background">
+<div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
     <!-- Header -->
-    <header class="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/95 backdrop-blur px-6 py-4">
-        <div>
-            <h1 class="text-2xl font-bold text-foreground">Simulador de Carrera</h1>
-            <p class="text-sm text-muted-foreground">Participa en eventos simulados y construye tu reputación como DJ profesional</p>
+    <header class="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground ">Simulador de Carrera</h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">Participa en eventos simulados y construye tu reputación como DJ profesional</p>
+            </div>
         </div>
+        
     </header>
 
     <!-- Content -->
-    <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+    <div class="p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
         
         <?php if ($success === 'submitted'): ?>
             <div class="bg-success/10 border border-success/20 text-success text-sm rounded-lg p-3">
@@ -511,30 +388,30 @@ render_sidebar();
             </div>
             
             <!-- Completed -->
-            <div class="bg-card border border-border/50 rounded-xl p-5 flex items-center gap-4">
-                <div class="p-3 bg-primary/10 rounded-lg text-primary">
-                    <i data-lucide="trophy" class="h-6 w-6"></i>
+            <div class="bg-card border border-border/50 rounded-xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4">
+                <div class="p-2 sm:p-3 bg-primary/10 rounded-lg text-primary flex-shrink-0">
+                    <i data-lucide="trophy" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                 </div>
-                <div>
+                <div class="min-w-0">
                     <h3 class="text-xl font-bold text-foreground leading-none"><?php echo $completed_events_count; ?></h3>
-                    <p class="text-2xs text-muted-foreground mt-1">Eventos completados</p>
+                    <p class="text-xs text-muted-foreground mt-1 truncate">Eventos completados</p>
                 </div>
             </div>
             
             <!-- Available -->
-            <div class="bg-card border border-border/50 rounded-xl p-5 flex items-center gap-4">
-                <div class="p-3 bg-success/10 rounded-lg text-success">
-                    <i data-lucide="radio" class="h-6 w-6"></i>
+            <div class="bg-card border border-border/50 rounded-xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4">
+                <div class="p-2 sm:p-3 bg-success/10 rounded-lg text-success flex-shrink-0">
+                    <i data-lucide="radio" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                 </div>
-                <div>
+                <div class="min-w-0">
                     <h3 class="text-xl font-bold text-foreground leading-none"><?php echo count($available_events); ?></h3>
-                    <p class="text-2xs text-muted-foreground mt-1">Eventos disponibles</p>
+                    <p class="text-xs text-muted-foreground mt-1 truncate">Eventos disponibles</p>
                 </div>
             </div>
         </div>
 
         <!-- Reputation Tiers Progress bar -->
-        <div class="bg-card border border-border/50 rounded-xl p-5 space-y-3">
+        <div class="bg-card border border-border/50 rounded-xl p-4 space-y-3">
             <h4 class="font-bold text-sm text-foreground">Progreso en los Tiers de Reputación</h4>
             <div class="flex items-center gap-2 overflow-x-auto pb-1">
                 <?php 
@@ -553,7 +430,7 @@ render_sidebar();
                       ? (($student['reputation'] - $t['min']) / ($t['max'] - $t['min'])) * 100
                       : ($isPast ? 100 : 0);
                 ?>
-                    <div class="flex-1 min-w-[90px] space-y-1.5">
+                    <div class="flex-1 min-w-[80px] space-y-1.5">
                         <div class="flex items-center gap-1.5 text-2xs font-semibold">
                             <span class="w-2.5 h-2.5 rounded-full" style="background-color: <?php echo $t['color']; ?>"></span>
                             <span class="<?php echo $isActive ? 'text-foreground font-bold' : 'text-muted-foreground'; ?>">
@@ -592,62 +469,91 @@ render_sidebar();
                     $has_part = (bool)$part_item;
                     $is_eval = $has_part && ($part_item['status'] === 'evaluated');
                 ?>
-                    <div class="bg-card border border-border/50 rounded-xl p-6 flex flex-col md:flex-row md:items-start justify-between gap-6 hover:border-primary/20 transition-all">
-                        <div class="flex gap-4">
-                            <div class="w-14 h-14 bg-primary/10 text-primary rounded-xl flex items-center justify-center flex-shrink-0">
-                                <i data-lucide="<?php echo $venueIcons[$event['venue_type']] ?? 'radio'; ?>" class="h-7 w-7"></i>
-                            </div>
-                            <div>
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <h4 class="font-bold text-base text-foreground leading-none"><?php echo htmlspecialchars($event['name']); ?></h4>
-                                    <span class="text-3xs font-semibold px-2 py-0.5 rounded border <?php echo $difficultyColors[$event['difficulty']] ?? ''; ?>">
-                                        <?php echo $difficultyLabels[$event['difficulty']] ?? ''; ?>
-                                    </span>
+                    <div class="bg-card border border-border/50 rounded-xl p-3 hover:border-primary/20 transition-all">
+                        <div class="flex items-start justify-between gap-2">
+                            <div class="flex flex-1 items-start gap-2.5 min-w-0">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-primary/10 text-primary rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                                    <i data-lucide="<?php echo $venueIcons[$event['venue_type']] ?? 'radio'; ?>" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                                 </div>
-                                <p class="text-xs text-muted-foreground mt-2 leading-relaxed max-w-xl"><?php echo htmlspecialchars($event['description']); ?></p>
-                                
-                                <div class="flex flex-wrap items-center gap-4 text-xs text-muted-foreground pt-3">
-                                    <span class="flex items-center gap-1">
-                                        <i data-lucide="users" class="h-3.5 w-3.5"></i>
-                                        <?php echo $event['audience']; ?> personas
-                                    </span>
-                                    <span>•</span>
-                                    <span class="flex items-center gap-1">
-                                        <i data-lucide="clock" class="h-3.5 w-3.5"></i>
-                                        <?php echo $event['duration']; ?> min
-                                    </span>
-                                    <span>•</span>
-                                    <span class="text-success font-semibold flex items-center gap-0.5">
-                                        <i data-lucide="dollar-sign" class="h-3.5 w-3.5"></i>
-                                        <?php echo $event['payment']; ?>
-                                    </span>
-                                </div>
-                                
-                                <!-- Participation mini status banner inside available card -->
-                                <?php if ($has_part): ?>
-                                    <div class="mt-4 pt-3 border-t border-border/30 flex items-center gap-3 text-xs">
-                                        <?php if ($is_eval): ?>
-                                            <span class="text-success font-bold flex items-center gap-1">
-                                                <i data-lucide="check" class="h-4 w-4"></i> Evaluado (Nota: <?php echo round($part_item['total_score'], 1); ?>)
-                                            </span>
-                                            <span class="text-primary font-medium">+<?php echo $part_item['xp_awarded']; ?> XP</span>
-                                            <span class="text-[#39FF14] font-medium">+<?php echo $part_item['reputation_change']; ?> Rep</span>
-                                        <?php else: ?>
-                                            <span class="text-muted-foreground flex items-center gap-1">
-                                                <i data-lucide="clock" class="h-4 w-4"></i> Esperando evaluación de setlist
-                                            </span>
-                                        <?php endif; ?>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-start gap-2">
+                                        <h4 class="font-bold text-sm text-foreground leading-tight line-clamp-2 min-w-0"><?php echo htmlspecialchars($event['name']); ?></h4>
+                                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded border <?php echo $difficultyColors[$event['difficulty']] ?? ''; ?> flex-shrink-0 uppercase tracking-wide mt-0.5">
+                                            <?php echo $difficultyLabels[$event['difficulty']] ?? ''; ?>
+                                        </span>
                                     </div>
-                                <?php endif; ?>
+                                    
+                                    <?php 
+                                        $desc = htmlspecialchars($event['description']);
+                                        $is_long_mob = mb_strlen($desc) > 55;
+                                        $short_desc_mob = $is_long_mob ? mb_substr($desc, 0, 55) . '...' : $desc;
+                                        $is_long_desk = mb_strlen($desc) > 160;
+                                        $short_desc_desk = $is_long_desk ? mb_substr($desc, 0, 160) . '...' : $desc;
+                                    ?>
+                                    <div class="text-[11px] sm:text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                                        <!-- Mobile View -->
+                                        <div class="sm:hidden inline">
+                                            <?php if ($is_long_mob): ?>
+                                                <span id="desc-short-mob-avail-<?php echo $event['id']; ?>">
+                                                    <?php echo $short_desc_mob; ?> 
+                                                    <span class="text-primary font-bold hover:underline cursor-pointer ml-0.5 whitespace-nowrap inline-flex items-center" onclick="document.getElementById('desc-short-mob-avail-<?php echo $event['id']; ?>').classList.add('hidden'); document.getElementById('desc-full-mob-avail-<?php echo $event['id']; ?>').classList.remove('hidden');">Ver más <i data-lucide="chevron-down" class="h-3 w-3 ml-0.5"></i></span>
+                                                </span>
+                                                <span id="desc-full-mob-avail-<?php echo $event['id']; ?>" class="hidden">
+                                                    <?php echo $desc; ?> 
+                                                    <span class="text-primary font-bold hover:underline cursor-pointer ml-0.5 whitespace-nowrap inline-flex items-center" onclick="document.getElementById('desc-full-mob-avail-<?php echo $event['id']; ?>').classList.add('hidden'); document.getElementById('desc-short-mob-avail-<?php echo $event['id']; ?>').classList.remove('hidden');">Ocultar <i data-lucide="chevron-up" class="h-3 w-3 ml-0.5"></i></span>
+                                                </span>
+                                            <?php else: ?>
+                                                <span><?php echo $desc; ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                        <!-- Desktop View -->
+                                        <div class="hidden sm:inline">
+                                            <?php if ($is_long_desk): ?>
+                                                <span id="desc-short-desk-avail-<?php echo $event['id']; ?>">
+                                                    <?php echo $short_desc_desk; ?> 
+                                                    <span class="text-primary font-bold hover:underline cursor-pointer ml-0.5 whitespace-nowrap inline-flex items-center" onclick="document.getElementById('desc-short-desk-avail-<?php echo $event['id']; ?>').classList.add('hidden'); document.getElementById('desc-full-desk-avail-<?php echo $event['id']; ?>').classList.remove('hidden');">Ver más <i data-lucide="chevron-down" class="h-3 w-3 ml-0.5"></i></span>
+                                                </span>
+                                                <span id="desc-full-desk-avail-<?php echo $event['id']; ?>" class="hidden">
+                                                    <?php echo $desc; ?> 
+                                                    <span class="text-primary font-bold hover:underline cursor-pointer ml-0.5 whitespace-nowrap inline-flex items-center" onclick="document.getElementById('desc-full-desk-avail-<?php echo $event['id']; ?>').classList.add('hidden'); document.getElementById('desc-short-desk-avail-<?php echo $event['id']; ?>').classList.remove('hidden');">Ocultar <i data-lucide="chevron-up" class="h-3 w-3 ml-0.5"></i></span>
+                                                </span>
+                                            <?php else: ?>
+                                                <span><?php echo $desc; ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex flex-wrap items-center gap-2.5 text-[10px] text-muted-foreground font-medium mt-1.5 w-full">
+                                        <span class="flex items-center gap-1"><i data-lucide="users" class="h-3 w-3"></i><?php echo $event['audience']; ?></span>
+                                        <span class="flex items-center gap-1"><i data-lucide="clock" class="h-3 w-3"></i><?php echo $event['duration']; ?>m</span>
+                                        <span class="text-success flex items-center gap-0.5 font-bold"><i data-lucide="dollar-sign" class="h-3 w-3"></i><?php echo $event['payment']; ?></span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex-shrink-0 ml-1">
+                                <a href="student_simulator.php?id=<?php echo $event['id']; ?>" class="inline-flex items-center justify-center <?php echo $has_part ? 'bg-muted text-foreground' : 'bg-primary text-primary-foreground'; ?> font-bold px-2.5 py-1.5 rounded-lg text-xs hover:opacity-90 transition-colors whitespace-nowrap">
+                                    <?php echo $has_part ? 'Ver' : 'Participar'; ?>
+                                    <i data-lucide="chevron-right" class="h-3.5 w-3.5 ml-0.5 -mr-1"></i>
+                                </a>
                             </div>
                         </div>
                         
-                        <div class="flex-shrink-0">
-                            <a href="student_simulator.php?id=<?php echo $event['id']; ?>" class="inline-flex items-center gap-1.5 <?php echo $has_part ? 'bg-muted text-foreground' : 'bg-primary text-primary-foreground'; ?> font-semibold px-4 py-2 rounded-lg text-xs hover:opacity-90 transition-colors">
-                                <?php echo $has_part ? 'Ver detalles' : 'Participar'; ?>
-                                <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
-                            </a>
-                        </div>
+                        <?php if ($has_part): ?>
+                            <div class="mt-2.5 pt-2 border-t border-border/30 flex items-center gap-2 text-[10px] sm:text-xs">
+                                <?php if ($is_eval): ?>
+                                    <span class="text-success font-bold flex items-center gap-1">
+                                        <i data-lucide="check" class="h-3.5 w-3.5"></i> Evaluado (<?php echo round($part_item['total_score'], 1); ?>)
+                                    </span>
+                                    <span class="text-primary font-bold ml-1">+<?php echo $part_item['xp_awarded']; ?> XP</span>
+                                    <span class="text-[#39FF14] font-bold ml-1">+<?php echo $part_item['reputation_change']; ?> Rep</span>
+                                <?php else: ?>
+                                    <span class="text-muted-foreground flex items-center gap-1 font-medium">
+                                        <i data-lucide="clock" class="h-3.5 w-3.5"></i> Esperando evaluación
+                                    </span>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -666,27 +572,68 @@ render_sidebar();
                         $rep_diff = $event['required_reputation'] - $student['reputation'];
                         $progress_pct = min(100, ($student['reputation'] / $event['required_reputation']) * 100);
                     ?>
-                        <div class="bg-card border border-border/50 rounded-xl p-6 flex flex-col sm:flex-row justify-between gap-6 opacity-60">
-                            <div class="flex gap-4">
-                                <div class="w-14 h-14 bg-muted border border-border rounded-xl flex items-center justify-center text-muted-foreground flex-shrink-0">
-                                    <i data-lucide="lock" class="h-7 w-7"></i>
+                        <div class="bg-card border border-border/50 rounded-xl p-3 opacity-60">
+                            <div class="flex items-start gap-2.5">
+                                <div class="w-10 h-10 sm:w-12 sm:h-12 bg-muted border border-border rounded-lg flex items-center justify-center text-muted-foreground flex-shrink-0 mt-0.5">
+                                    <i data-lucide="lock" class="h-5 w-5 sm:h-6 sm:w-6"></i>
                                 </div>
-                                <div class="space-y-1">
-                                    <h4 class="font-bold text-base text-foreground"><?php echo htmlspecialchars($event['name']); ?></h4>
-                                    <span class="inline-block text-3xs font-semibold px-2 py-0.5 rounded border <?php echo $difficultyColors[$event['difficulty']] ?? ''; ?>">
-                                        <?php echo $difficultyLabels[$event['difficulty']] ?? ''; ?>
-                                    </span>
-                                    <p class="text-xs text-muted-foreground pt-1"><?php echo htmlspecialchars($event['description']); ?></p>
-                                    
-                                    <div class="pt-2 max-w-xs space-y-1">
-                                        <div class="flex justify-between text-3xs text-muted-foreground font-semibold">
-                                            <span>Progreso de Reputación</span>
-                                            <span><?php echo $student['reputation']; ?> / <?php echo $event['required_reputation']; ?> Rep</span>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-start gap-2">
+                                        <h4 class="font-bold text-sm text-foreground leading-tight line-clamp-2 min-w-0"><?php echo htmlspecialchars($event['name']); ?></h4>
+                                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded border <?php echo $difficultyColors[$event['difficulty']] ?? ''; ?> flex-shrink-0 uppercase tracking-wide mt-0.5">
+                                            <?php echo $difficultyLabels[$event['difficulty']] ?? ''; ?>
+                                        </span>
+                                    </div>
+                                    <?php 
+                                        $desc = htmlspecialchars($event['description']);
+                                        $is_long_mob = mb_strlen($desc) > 55;
+                                        $short_desc_mob = $is_long_mob ? mb_substr($desc, 0, 55) . '...' : $desc;
+                                        $is_long_desk = mb_strlen($desc) > 160;
+                                        $short_desc_desk = $is_long_desk ? mb_substr($desc, 0, 160) . '...' : $desc;
+                                    ?>
+                                    <div class="text-[11px] sm:text-xs text-muted-foreground mt-1.5 leading-relaxed">
+                                        <!-- Mobile View -->
+                                        <div class="sm:hidden inline">
+                                            <?php if ($is_long_mob): ?>
+                                                <span id="desc-short-mob-lock-<?php echo $event['id']; ?>">
+                                                    <?php echo $short_desc_mob; ?> 
+                                                    <span class="text-primary font-bold hover:underline cursor-pointer ml-0.5 whitespace-nowrap inline-flex items-center" onclick="document.getElementById('desc-short-mob-lock-<?php echo $event['id']; ?>').classList.add('hidden'); document.getElementById('desc-full-mob-lock-<?php echo $event['id']; ?>').classList.remove('hidden');">Ver más <i data-lucide="chevron-down" class="h-3 w-3 ml-0.5"></i></span>
+                                                </span>
+                                                <span id="desc-full-mob-lock-<?php echo $event['id']; ?>" class="hidden">
+                                                    <?php echo $desc; ?> 
+                                                    <span class="text-primary font-bold hover:underline cursor-pointer ml-0.5 whitespace-nowrap inline-flex items-center" onclick="document.getElementById('desc-full-mob-lock-<?php echo $event['id']; ?>').classList.add('hidden'); document.getElementById('desc-short-mob-lock-<?php echo $event['id']; ?>').classList.remove('hidden');">Ocultar <i data-lucide="chevron-up" class="h-3 w-3 ml-0.5"></i></span>
+                                                </span>
+                                            <?php else: ?>
+                                                <span><?php echo $desc; ?></span>
+                                            <?php endif; ?>
                                         </div>
-                                        <div class="w-full h-1 bg-muted rounded-full overflow-hidden">
+                                        <!-- Desktop View -->
+                                        <div class="hidden sm:inline">
+                                            <?php if ($is_long_desk): ?>
+                                                <span id="desc-short-desk-lock-<?php echo $event['id']; ?>">
+                                                    <?php echo $short_desc_desk; ?> 
+                                                    <span class="text-primary font-bold hover:underline cursor-pointer ml-0.5 whitespace-nowrap inline-flex items-center" onclick="document.getElementById('desc-short-desk-lock-<?php echo $event['id']; ?>').classList.add('hidden'); document.getElementById('desc-full-desk-lock-<?php echo $event['id']; ?>').classList.remove('hidden');">Ver más <i data-lucide="chevron-down" class="h-3 w-3 ml-0.5"></i></span>
+                                                </span>
+                                                <span id="desc-full-desk-lock-<?php echo $event['id']; ?>" class="hidden">
+                                                    <?php echo $desc; ?> 
+                                                    <span class="text-primary font-bold hover:underline cursor-pointer ml-0.5 whitespace-nowrap inline-flex items-center" onclick="document.getElementById('desc-full-desk-lock-<?php echo $event['id']; ?>').classList.add('hidden'); document.getElementById('desc-short-desk-lock-<?php echo $event['id']; ?>').classList.remove('hidden');">Ocultar <i data-lucide="chevron-up" class="h-3 w-3 ml-0.5"></i></span>
+                                                </span>
+                                            <?php else: ?>
+                                                <span><?php echo $desc; ?></span>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-2 max-w-xs space-y-1.5 pr-2">
+                                        <div class="flex items-center justify-between gap-2 text-[10px] text-muted-foreground font-semibold flex-wrap">
+                                            <div class="flex items-center gap-2">
+                                                <span><?php echo $student['reputation']; ?> / <?php echo $event['required_reputation']; ?> Rep</span>
+                                                <span>(Faltan <?php echo $rep_diff; ?>)</span>
+                                            </div>
+                                        </div>
+                                        <div class="w-full h-1.5 bg-muted rounded-full overflow-hidden">
                                             <div class="h-full bg-primary" style="width: <?php echo $progress_pct; ?>%"></div>
                                         </div>
-                                        <p class="text-3xs text-muted-foreground">Necesitas <?php echo $rep_diff; ?> puntos más de reputación</p>
                                     </div>
                                 </div>
                             </div>

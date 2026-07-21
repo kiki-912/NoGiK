@@ -90,12 +90,18 @@ render_sidebar();
 <!-- Main Content Area -->
 <div class="flex-1 flex flex-col min-w-0 bg-background">
     <!-- Header -->
-    <header class="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/95 backdrop-blur px-6 py-4">
-        <div>
-            <h1 class="text-2xl font-bold text-foreground">Panel de Profesor</h1>
-            <p class="text-sm text-muted-foreground">Bienvenido, <?php echo htmlspecialchars($teacher['name']); ?></p>
+    <header class="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-4 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-xl font-bold text-foreground ">Panel de Profesor</h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">Bienvenido, <?php echo htmlspecialchars($teacher['name']); ?></p>
+            </div>
         </div>
-        <div class="flex items-center gap-2">
+        
+        <div class="flex items-center gap-2 flex-wrap justify-end shrink-0">
             <a href="teacher_classes.php?create=1" class="inline-flex items-center gap-1.5 border border-border bg-card hover:bg-muted/40 font-semibold px-4 py-2 rounded-lg text-xs text-foreground transition-colors">
                 <i data-lucide="plus-circle" class="h-4 w-4 text-primary"></i>
                 Nueva Clase
@@ -135,7 +141,7 @@ render_sidebar();
         <!-- Stats Grid -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- Stat 1 -->
-            <div class="bg-card border border-border/50 rounded-xl p-5 flex items-center gap-4">
+            <div class="bg-card border border-border/50 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                 <div class="p-3 bg-primary/10 rounded-lg text-primary">
                     <i data-lucide="users" class="h-6 w-6"></i>
                 </div>
@@ -146,7 +152,7 @@ render_sidebar();
                 </div>
             </div>
             <!-- Stat 2 -->
-            <div class="bg-card border border-border/50 rounded-xl p-5 flex items-center gap-4">
+            <div class="bg-card border border-border/50 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                 <div class="p-3 bg-secondary/10 rounded-lg text-secondary">
                     <i data-lucide="calendar" class="h-6 w-6"></i>
                 </div>
@@ -157,7 +163,7 @@ render_sidebar();
                 </div>
             </div>
             <!-- Stat 3 -->
-            <div class="bg-card border border-border/50 rounded-xl p-5 flex items-center gap-4">
+            <div class="bg-card border border-border/50 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                 <div class="p-3 bg-success/10 rounded-lg text-success">
                     <i data-lucide="music" class="h-6 w-6"></i>
                 </div>
@@ -168,7 +174,7 @@ render_sidebar();
                 </div>
             </div>
             <!-- Stat 4 -->
-            <div class="bg-card border border-border/50 rounded-xl p-5 flex items-center gap-4">
+            <div class="bg-card border border-border/50 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                 <div class="p-3 bg-[#FF6B35]/10 rounded-lg text-[#FF6B35]">
                     <i data-lucide="clipboard-check" class="h-6 w-6"></i>
                 </div>

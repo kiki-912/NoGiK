@@ -76,20 +76,26 @@ if (!empty($id)) {
     render_header("Detalle de Alumno - NogiK");
     render_sidebar();
     ?>
-    <div class="flex-1 flex flex-col min-w-0 bg-background">
+    <div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
         <!-- Header -->
-        <header class="sticky top-0 z-10 flex items-center gap-4 border-b border-border bg-background/95 backdrop-blur px-6 py-4">
+        <header class="sticky top-0 z-40 flex flex-wrap items-center gap-4 gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground "><?php echo htmlspecialchars($student['name']); ?></h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">Progreso detallado del estudiante</p>
+            </div>
+        </div>
             <a href="teacher_students.php" class="p-1.5 hover:bg-muted/30 rounded-lg text-muted-foreground hover:text-foreground">
                 <i data-lucide="arrow-left" class="h-5 w-5"></i>
             </a>
-            <div class="flex-1">
-                <h1 class="text-2xl font-bold text-foreground"><?php echo htmlspecialchars($student['name']); ?></h1>
-                <p class="text-sm text-muted-foreground">Progreso detallado del estudiante</p>
-            </div>
+            
         </header>
 
         <!-- Content -->
-        <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+        <div class="p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
             
             <!-- Student Header Profile Card -->
             <div class="bg-card border border-border/50 rounded-xl p-6">
@@ -406,17 +412,23 @@ render_sidebar();
 ?>
 
 <!-- Main Content Area -->
-<div class="flex-1 flex flex-col min-w-0 bg-background">
+<div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
     <!-- Header -->
-    <header class="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/95 backdrop-blur px-6 py-4">
-        <div>
-            <h1 class="text-2xl font-bold text-foreground">Alumnos</h1>
-            <p class="text-sm text-muted-foreground">Listado general de alumnos registrados en la academia</p>
+    <header class="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground ">Alumnos</h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">Listado general de alumnos registrados en la academia</p>
+            </div>
         </div>
+        
     </header>
 
     <!-- Content -->
-    <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+    <div class="p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
         
         <!-- Students list grid -->
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

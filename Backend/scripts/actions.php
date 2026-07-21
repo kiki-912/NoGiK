@@ -213,13 +213,9 @@ switch ($action) {
         
         $event_id = trim($_POST['event_id'] ?? '');
         $justification = trim($_POST['justification'] ?? '');
-        $track_names = $_POST['track_name'] ?? [];
-        $artists = $_POST['artist'] ?? [];
-        $bpms = $_POST['bpm'] ?? [];
-        $keys = $_POST['key'] ?? [];
-        $notes = $_POST['notes'] ?? [];
+        $set_url = trim($_POST['set_url'] ?? '');
         
-        if (empty($event_id) || empty($justification) || count($track_names) < 3) {
+        if (empty($event_id) || empty($justification) || empty($set_url)) {
             header("Location: ../../Frontend/student_simulator.php?id=" . urlencode($event_id) . "&error=invalid_participation");
             exit();
         }
@@ -227,23 +223,8 @@ switch ($action) {
         $participation_id = 'part-' . generate_uuid();
         
         // Insert participation
-        $stmt = $pdo->prepare("INSERT INTO event_participations (id, event_id, student_id, justification, submitted_at, status) VALUES (?, ?, ?, ?, NOW(), 'pending')");
-        $stmt->execute([$participation_id, $event_id, $user['id'], $justification]);
-        
-        // Insert tracks
-        $stmt_track = $pdo->prepare("INSERT INTO setlist_tracks (participation_id, position, track_name, artist, bpm, track_key, notes) VALUES (?, ?, ?, ?, ?, ?, ?)");
-        for ($i = 0; $i < count($track_names); $i++) {
-            if (empty($track_names[$i]) || empty($artists[$i])) continue;
-            $stmt_track->execute([
-                $participation_id,
-                $i + 1,
-                trim($track_names[$i]),
-                trim($artists[$i]),
-                intval($bpms[$i] ?? 128),
-                trim($keys[$i] ?? ''),
-                trim($notes[$i] ?? '')
-            ]);
-        }
+        $stmt = $pdo->prepare("INSERT INTO event_participations (id, event_id, student_id, set_url, justification, submitted_at, status) VALUES (?, ?, ?, ?, ?, NOW(), 'pending')");
+        $stmt->execute([$participation_id, $event_id, $user['id'], $set_url, $justification]);
         
         header("Location: ../../Frontend/student_simulator.php?success=submitted");
         exit();
@@ -582,14 +563,40 @@ switch ($action) {
         }
         
         $avatar_url = null;
-        if (isset($_FILES['avatar_file']) && $_FILES['avatar_file']['error'] === UPLOAD_ERR_OK) {
+        $upload_dir = __DIR__ . '/../../Frontend/public/uploads';
+        
+        if (!empty($_POST['cropped_avatar_data'])) {
+            $data = $_POST['cropped_avatar_data'];
+            // Format: data:image/jpeg;base64,...
+            if (preg_match('/^data:image\/(\w+);base64,/', $data, $type)) {
+                $data = substr($data, strpos($data, ',') + 1);
+                $type = strtolower($type[1]); // jpeg, png, etc.
+                
+                if (in_array($type, ['jpg', 'jpeg', 'png', 'webp'])) {
+                    $data = base64_decode($data);
+                    
+                    if ($data !== false) {
+                        if (!is_dir($upload_dir)) {
+                            mkdir($upload_dir, 0755, true);
+                        }
+                        
+                        $ext = $type === 'jpeg' ? 'jpg' : $type;
+                        $new_file_name = 'avatar_' . $user_id . '_' . time() . '.' . $ext;
+                        $dest_path = $upload_dir . '/' . $new_file_name;
+                        
+                        if (file_put_contents($dest_path, $data)) {
+                            $avatar_url = 'Frontend/public/uploads/' . $new_file_name;
+                        }
+                    }
+                }
+            }
+        } elseif (isset($_FILES['avatar_file']) && $_FILES['avatar_file']['error'] === UPLOAD_ERR_OK) {
             $file_tmp = $_FILES['avatar_file']['tmp_name'];
             $file_name = $_FILES['avatar_file']['name'];
             $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
             
             $allowed_exts = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg'];
             if (in_array($file_ext, $allowed_exts)) {
-                $upload_dir = __DIR__ . '/../../Frontend/public/uploads';
                 if (!is_dir($upload_dir)) {
                     mkdir($upload_dir, 0755, true);
                 }

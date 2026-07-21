@@ -27,9 +27,7 @@ if (!empty($part_id)) {
     $selected_part = $stmt->fetch();
     
     if ($selected_part) {
-        $stmt_tr = $pdo->prepare("SELECT * FROM setlist_tracks WHERE participation_id = ? ORDER BY position ASC");
-        $stmt_tr->execute([$part_id]);
-        $selected_tracks = $stmt_tr->fetchAll();
+        // No extra queries needed since set_url is in ep
     }
 }
 
@@ -78,21 +76,27 @@ render_sidebar();
 ?>
 
 <!-- Main Content Area -->
-<div class="flex-1 flex flex-col min-w-0 bg-background">
+<div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
     <!-- Header -->
-    <header class="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/95 backdrop-blur px-6 py-4">
-        <div>
-            <h1 class="text-2xl font-bold text-foreground">Simulador de Carrera</h1>
-            <p class="text-sm text-muted-foreground">Gestiona eventos y evalúa participaciones</p>
+    <header class="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-xl sm:text-2xl font-bold text-foreground ">Simulador</h1>
+                <p class="text-xs sm:text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">Gestiona eventos y evalúa participaciones</p>
+            </div>
         </div>
-        <a href="teacher_simulator.php?create_event=1" class="inline-flex items-center gap-2 bg-[#00F2FF] text-[#0F1115] font-bold px-4 py-2 rounded-lg text-sm hover:opacity-90 transition-colors">
+        
+        <a href="teacher_simulator.php?create_event=1" class="inline-flex items-center gap-1.5 bg-[#00F2FF] text-[#0F1115] font-bold px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm hover:opacity-90 transition-colors shrink-0">
             <i data-lucide="globe" class="h-4 w-4"></i>
             <span>Nuevo Evento</span>
         </a>
     </header>
 
     <!-- Content Area -->
-    <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+    <div class="p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
         
         <?php if ($success === 'event_created'): ?>
             <div class="bg-success/10 border border-success/20 text-success text-sm rounded-lg p-3">
@@ -141,20 +145,20 @@ render_sidebar();
         </div>
 
         <!-- Tabs Pill bar -->
-        <div class="flex gap-2 bg-[#101216] p-1 rounded-xl w-max border border-border/30">
-            <a href="teacher_simulator.php?tab=pending" class="px-4 py-2 text-xs font-semibold rounded-lg transition-all <?php echo $active_tab === 'pending' ? 'bg-[#1D2026] text-foreground' : 'text-muted-foreground hover:text-foreground'; ?>">
+        <div class="flex gap-2 bg-[#101216] p-1 rounded-xl w-full sm:w-max border border-border/30 overflow-x-auto scrollbar-none flex-nowrap">
+            <a href="teacher_simulator.php?tab=pending" class="px-4 py-2 text-xs font-semibold rounded-lg transition-all flex-shrink-0 <?php echo $active_tab === 'pending' ? 'bg-[#1D2026] text-foreground' : 'text-muted-foreground hover:text-foreground'; ?>">
                 Pendientes (<?php echo $total_pending; ?>)
             </a>
-            <a href="teacher_simulator.php?tab=evaluated" class="px-4 py-2 text-xs font-semibold rounded-lg transition-all <?php echo $active_tab === 'evaluated' ? 'bg-[#1D2026] text-foreground' : 'text-muted-foreground hover:text-foreground'; ?>">
+            <a href="teacher_simulator.php?tab=evaluated" class="px-4 py-2 text-xs font-semibold rounded-lg transition-all flex-shrink-0 <?php echo $active_tab === 'evaluated' ? 'bg-[#1D2026] text-foreground' : 'text-muted-foreground hover:text-foreground'; ?>">
                 Evaluadas (<?php echo $total_evaluated; ?>)
             </a>
-            <a href="teacher_simulator.php?tab=events" class="px-4 py-2 text-xs font-semibold rounded-lg transition-all <?php echo $active_tab === 'events' ? 'bg-[#1D2026] text-foreground' : 'text-muted-foreground hover:text-foreground'; ?>">
+            <a href="teacher_simulator.php?tab=events" class="px-4 py-2 text-xs font-semibold rounded-lg transition-all flex-shrink-0 <?php echo $active_tab === 'events' ? 'bg-[#1D2026] text-foreground' : 'text-muted-foreground hover:text-foreground'; ?>">
                 Eventos (<?php echo $total_events; ?>)
             </a>
         </div>
 
         <!-- Main Tab Content Card -->
-        <div class="bg-card border border-border/50 rounded-xl p-6 min-h-[300px] flex flex-col justify-center">
+        <div class="bg-card border border-border/50 rounded-xl p-4 sm:p-6 min-h-[300px] flex flex-col justify-center">
             
             <!-- PENDENT PARTICIPATIONS TAB -->
             <?php if ($active_tab === 'pending'): ?>
@@ -166,14 +170,14 @@ render_sidebar();
                 <?php else: ?>
                     <div class="grid gap-4 w-full self-start">
                         <?php foreach ($pending_parts as $part): ?>
-                            <div class="bg-[#15181C]/50 border border-border/30 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-6 hover:border-primary/20 transition-all">
-                                <div class="flex gap-4">
+                            <div class="bg-[#15181C]/50 border border-border/30 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-6 hover:border-primary/20 transition-all w-full max-w-full">
+                                <div class="flex gap-4 flex-1 min-w-0">
                                     <div class="w-12 h-12 bg-secondary/10 text-secondary rounded-xl flex items-center justify-center flex-shrink-0">
                                         <i data-lucide="radio" class="h-6 w-6"></i>
                                     </div>
-                                    <div>
-                                        <h4 class="font-bold text-sm text-foreground"><?php echo htmlspecialchars($part['event_name']); ?></h4>
-                                        <p class="text-xs text-muted-foreground mt-0.5">Alumno: <?php echo htmlspecialchars($part['student_name']); ?> • Dificultad: <?php echo htmlspecialchars($part['difficulty']); ?></p>
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="font-bold text-sm text-foreground truncate"><?php echo htmlspecialchars($part['event_name']); ?></h4>
+                                        <p class="text-xs text-muted-foreground mt-0.5 truncate">Alumno: <?php echo htmlspecialchars($part['student_name']); ?> • Dificultad: <?php echo htmlspecialchars($part['difficulty']); ?></p>
                                         <p class="text-3xs text-muted-foreground mt-1">Presentado el <?php echo date('d/m/Y H:i', strtotime($part['submitted_at'])); ?></p>
                                     </div>
                                 </div>
@@ -195,18 +199,18 @@ render_sidebar();
                 <?php else: ?>
                     <div class="grid gap-4 w-full self-start">
                         <?php foreach ($evaluated_parts as $part): ?>
-                            <div class="bg-[#15181C]/50 border border-border/30 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-                                <div class="flex gap-4">
+                            <div class="bg-[#15181C]/50 border border-border/30 rounded-xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-6 w-full max-w-full">
+                                <div class="flex gap-4 flex-1 min-w-0">
                                     <div class="w-12 h-12 bg-success/10 text-success rounded-xl flex items-center justify-center flex-shrink-0">
                                         <i data-lucide="check-circle" class="h-6 w-6"></i>
                                     </div>
-                                    <div>
-                                        <h4 class="font-bold text-sm text-foreground"><?php echo htmlspecialchars($part['event_name']); ?></h4>
-                                        <p class="text-xs text-muted-foreground mt-0.5">Alumno: <?php echo htmlspecialchars($part['student_name']); ?> • Evaluada el <?php echo date('d/m/Y H:i', strtotime($part['evaluated_at'])); ?></p>
+                                    <div class="flex-1 min-w-0">
+                                        <h4 class="font-bold text-sm text-foreground truncate"><?php echo htmlspecialchars($part['event_name']); ?></h4>
+                                        <p class="text-xs text-muted-foreground mt-0.5 truncate">Alumno: <?php echo htmlspecialchars($part['student_name']); ?> • Evaluada el <?php echo date('d/m/Y H:i', strtotime($part['evaluated_at'])); ?></p>
                                     </div>
                                 </div>
                                 
-                                <div class="flex items-center gap-1.5 bg-[#39FF14]/10 text-[#39FF14] border border-[#39FF14]/20 px-3 py-1.5 rounded-lg text-xs font-bold self-end sm:self-auto">
+                                <div class="flex items-center gap-1.5 bg-[#39FF14]/10 text-[#39FF14] border border-[#39FF14]/20 px-3 py-1.5 rounded-lg text-xs font-bold self-end sm:self-auto flex-shrink-0">
                                     <i data-lucide="star" class="h-4 w-4 fill-current"></i>
                                     <span>Nota: <?php echo round($part['total_score'], 1); ?>/10</span>
                                 </div>
@@ -227,8 +231,8 @@ render_sidebar();
                         <?php foreach ($events as $ev): 
                             $rep_tier = get_reputation_tier($ev['required_reputation']);
                         ?>
-                            <div class="bg-[#15181C]/50 border border-border/30 rounded-xl p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-primary/20 transition-all">
-                                <div class="space-y-2 flex-1 min-w-0">
+                            <div class="bg-[#15181C]/50 border border-border/30 rounded-xl p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:border-primary/20 transition-all w-full max-w-full">
+                                <div class="space-y-2 flex-1 min-w-0 w-full max-w-full">
                                     <div class="flex flex-wrap items-center gap-2">
                                         <h4 class="font-bold text-sm text-foreground leading-tight"><?php echo htmlspecialchars($ev['name']); ?></h4>
                                         <span class="text-3xs font-semibold px-2 py-0.5 bg-primary/10 text-primary border border-primary/20 rounded-full">
@@ -240,12 +244,12 @@ render_sidebar();
                                     </div>
                                     <p class="text-xs text-muted-foreground leading-relaxed truncate max-w-xl"><?php echo htmlspecialchars($ev['description']); ?></p>
                                     
-                                    <div class="flex flex-wrap gap-4 text-[10px] text-muted-foreground pt-1">
-                                        <span>Estilos: <strong class="text-foreground"><?php echo htmlspecialchars($ev['music_styles']); ?></strong></span>
-                                        <span>•</span>
-                                        <span>Rep. Requerida: <strong style="color: <?php echo $rep_tier['color']; ?>;"><?php echo $ev['required_reputation']; ?> (<?php echo $rep_tier['name']; ?>)</strong></span>
-                                        <span>•</span>
-                                        <span>Pago Base: <strong class="text-foreground">$<?php echo $ev['payment']; ?></strong></span>
+                                    <div class="flex flex-wrap gap-2 sm:gap-4 text-[10px] text-muted-foreground pt-1">
+                                        <span class="truncate max-w-full">Estilos: <strong class="text-foreground"><?php echo htmlspecialchars($ev['music_styles']); ?></strong></span>
+                                        <span class="hidden sm:inline">•</span>
+                                        <span class="truncate max-w-full">Rep. Requerida: <strong style="color: <?php echo $rep_tier['color']; ?>;"><?php echo $ev['required_reputation']; ?> (<?php echo $rep_tier['name']; ?>)</strong></span>
+                                        <span class="hidden sm:inline">•</span>
+                                        <span class="truncate max-w-full">Pago Base: <strong class="text-foreground">$<?php echo $ev['payment']; ?></strong></span>
                                     </div>
                                 </div>
                                 <div class="text-right text-xs text-muted-foreground leading-none self-end md:self-auto border-t md:border-t-0 border-border/30 pt-3 md:pt-0 w-full md:w-auto flex md:flex-col justify-between md:justify-end gap-1 flex-shrink-0">
@@ -308,7 +312,7 @@ render_sidebar();
     <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-sm p-4">
         <div class="w-full max-w-[620px] bg-[#15181C] border border-[#2D3139] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
             <!-- Header -->
-            <div class="flex items-center justify-between px-8 py-5 border-b border-[#2D3139]/40 flex-shrink-0">
+            <div class="flex items-center justify-between px-4 sm:px-8 py-4 sm:py-5 border-b border-[#2D3139]/40 flex-shrink-0">
                 <h3 class="text-base font-extrabold text-foreground">Crear Evento para Simulador</h3>
                 <a href="teacher_simulator.php" class="text-muted-foreground hover:text-foreground p-1 transition-colors">
                     <i data-lucide="x" class="h-5 w-5"></i>
@@ -316,38 +320,62 @@ render_sidebar();
             </div>
 
             <!-- Content scrollable -->
-            <div class="p-8 overflow-y-auto space-y-5 flex-1">
+            <div class="px-4 sm:px-8 pb-4 sm:pb-8 pt-3 sm:pt-4 overflow-y-auto space-y-5 flex-1">
                 <form action="../Backend/scripts/actions.php" method="POST" class="space-y-5">
-                    <input type="hidden" name="action" value="create_event">
                     
                     <div class="space-y-1.5">
+                        <input type="hidden" name="action" value="create_event">
                         <label for="name" class="text-xs font-semibold text-foreground">Nombre del Evento / Locación</label>
-                        <input id="name" name="name" required placeholder="Ej: Club Subterráneo - Set Apertura" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-xs text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
+                        <input id="name" name="name" required placeholder="Ej: Club Subterráneo - Set Apertura" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
                     </div>
 
                     <div class="space-y-1.5">
                         <label for="description" class="text-xs font-semibold text-foreground">Descripción y Expectativa del Público</label>
-                        <textarea id="description" name="description" rows="3" required placeholder="Describe lo que se espera..." class="w-full bg-input border border-border rounded-lg px-3 py-2 text-xs text-foreground resize-none focus:ring-1 focus:ring-primary focus:outline-none"></textarea>
+                        <textarea id="description" name="description" rows="3" required placeholder="Describe lo que se espera..." class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground resize-none focus:ring-1 focus:ring-primary focus:outline-none"></textarea>
                     </div>
 
                     <div class="grid sm:grid-cols-2 gap-4">
                         <div class="space-y-1.5">
                             <label for="type" class="text-xs font-semibold text-foreground">Tipo de Locación</label>
-                            <select id="type" name="type" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-xs text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
-                                <option value="club">Club / Discoteca</option>
-                                <option value="festival">Festival Escenario Principal</option>
-                                <option value="radio">Radio Show Set</option>
-                                <option value="private">Evento Privado / Terraza</option>
-                                <option value="bar">Bar / Pub</option>
-                            </select>
+                            <div class="relative custom-select-wrapper" id="type_wrapper">
+                                <select id="type" name="type" class="hidden">
+                                    <option value="club" selected>Club / Discoteca</option>
+                                    <option value="festival">Festival Escenario Principal</option>
+                                    <option value="radio">Radio Show Set</option>
+                                    <option value="private">Evento Privado / Terraza</option>
+                                    <option value="bar">Bar / Pub</option>
+                                </select>
+                                <div class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground cursor-pointer flex justify-between items-center transition-colors hover:border-primary/50" onclick="toggleCustomDropdown('type_list')">
+                                    <span id="type_display" class="truncate pointer-events-none">Club / Discoteca</span>
+                                    <i data-lucide="chevron-down" class="h-4 w-4 opacity-50 pointer-events-none"></i>
+                                </div>
+                                <div id="type_list" class="absolute top-full left-0 w-full mt-1.5 bg-[#1D2026] border border-border rounded-lg shadow-2xl z-50 hidden overflow-hidden py-1 max-h-60 overflow-y-auto">
+                                    <div class="px-3 py-2 text-sm text-foreground hover:bg-muted hover:text-primary font-medium cursor-pointer transition-colors" onclick="selectCustomOption('type', 'club', 'Club / Discoteca')">Club / Discoteca</div>
+                                    <div class="px-3 py-2 text-sm text-foreground hover:bg-muted hover:text-primary font-medium cursor-pointer transition-colors" onclick="selectCustomOption('type', 'festival', 'Festival Escenario Principal')">Festival Escenario Principal</div>
+                                    <div class="px-3 py-2 text-sm text-foreground hover:bg-muted hover:text-primary font-medium cursor-pointer transition-colors" onclick="selectCustomOption('type', 'radio', 'Radio Show Set')">Radio Show Set</div>
+                                    <div class="px-3 py-2 text-sm text-foreground hover:bg-muted hover:text-primary font-medium cursor-pointer transition-colors" onclick="selectCustomOption('type', 'private', 'Evento Privado / Terraza')">Evento Privado / Terraza</div>
+                                    <div class="px-3 py-2 text-sm text-foreground hover:bg-muted hover:text-primary font-medium cursor-pointer transition-colors" onclick="selectCustomOption('type', 'bar', 'Bar / Pub')">Bar / Pub</div>
+                                </div>
+                            </div>
                         </div>
                         <div class="space-y-1.5">
                             <label for="difficulty" class="text-xs font-semibold text-foreground">Dificultad</label>
-                            <select id="difficulty" name="difficulty" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-xs text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
-                                <option value="Fácil">Fácil</option>
-                                <option value="Medio" selected>Medio</option>
-                                <option value="Difícil">Difícil</option>
-                            </select>
+                            <div class="relative custom-select-wrapper" id="difficulty_wrapper">
+                                <select id="difficulty" name="difficulty" class="hidden">
+                                    <option value="Fácil">Fácil</option>
+                                    <option value="Medio" selected>Medio</option>
+                                    <option value="Difícil">Difícil</option>
+                                </select>
+                                <div class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground cursor-pointer flex justify-between items-center transition-colors hover:border-primary/50" onclick="toggleCustomDropdown('difficulty_list')">
+                                    <span id="difficulty_display" class="truncate pointer-events-none">Medio</span>
+                                    <i data-lucide="chevron-down" class="h-4 w-4 opacity-50 pointer-events-none"></i>
+                                </div>
+                                <div id="difficulty_list" class="absolute top-full left-0 w-full mt-1.5 bg-[#1D2026] border border-border rounded-lg shadow-2xl z-50 hidden overflow-hidden py-1">
+                                    <div class="px-3 py-2 text-sm text-foreground hover:bg-muted hover:text-primary font-medium cursor-pointer transition-colors" onclick="selectCustomOption('difficulty', 'Fácil', 'Fácil')">Fácil</div>
+                                    <div class="px-3 py-2 text-sm text-foreground hover:bg-muted hover:text-primary font-medium cursor-pointer transition-colors" onclick="selectCustomOption('difficulty', 'Medio', 'Medio')">Medio</div>
+                                    <div class="px-3 py-2 text-sm text-foreground hover:bg-muted hover:text-primary font-medium cursor-pointer transition-colors" onclick="selectCustomOption('difficulty', 'Difícil', 'Difícil')">Difícil</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -382,16 +410,19 @@ render_sidebar();
                     </div>
 
                     <div class="space-y-1.5">
-                        <label for="music_styles" class="text-xs font-semibold text-foreground">Géneros Musicales Permitidos (Separa con comas)</label>
-                        <input id="music_styles" name="music_styles" required placeholder="Ej: Tech House, House, Minimal" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-xs text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
+                        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-0.5">
+                            <label for="music_styles" class="text-xs font-semibold text-foreground">Géneros Musicales Permitidos</label>
+                            <span class="text-[10px] text-muted-foreground">Separados por comas</span>
+                        </div>
+                        <input id="music_styles" name="music_styles" required placeholder="Ej: Tech House, House, Minimal" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
                     </div>
 
                     <!-- Footer actions -->
-                    <div class="flex items-center justify-end gap-3 pt-3 border-t border-[#2D3139]/40 flex-shrink-0">
-                        <a href="teacher_simulator.php" class="bg-transparent hover:bg-muted/10 border border-border text-foreground font-semibold px-4 py-2 rounded-lg text-xs transition-colors flex items-center justify-center">
+                    <div class="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-4 border-t border-[#2D3139]/40 flex-shrink-0">
+                        <a href="teacher_simulator.php" class="bg-transparent hover:bg-muted/10 border border-border text-foreground font-semibold px-4 py-2 rounded-lg text-xs transition-colors flex items-center justify-center w-full sm:w-auto">
                             Cancelar
                         </a>
-                        <button type="submit" class="bg-[#00F2FF] text-[#0F1115] font-bold px-4 py-2 rounded-lg text-xs hover:opacity-90 transition-colors flex items-center justify-center gap-1.5">
+                        <button type="submit" class="bg-[#00F2FF] text-[#0F1115] font-bold px-4 py-2 rounded-lg text-xs hover:opacity-90 transition-colors flex items-center justify-center gap-1.5 w-full sm:w-auto">
                             Publicar Evento
                         </button>
                     </div>
@@ -407,7 +438,7 @@ render_sidebar();
         <!-- Modal panel - Larger -->
         <div class="w-full max-w-[760px] bg-[#15181C] border border-[#2D3139] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
             <!-- Header -->
-            <div class="flex items-center justify-between px-8 py-5 border-b border-[#2D3139]/40 flex-shrink-0">
+            <div class="flex items-center justify-between px-4 sm:px-8 py-4 sm:py-5 border-b border-[#2D3139]/40 flex-shrink-0">
                 <h3 class="text-base font-extrabold text-foreground truncate">Evaluar Evento: <?php echo htmlspecialchars($selected_part['event_name']); ?></h3>
                 <a href="teacher_simulator.php?tab=pending" class="text-muted-foreground hover:text-foreground p-1 transition-colors">
                     <i data-lucide="x" class="h-5 w-5"></i>
@@ -419,52 +450,41 @@ render_sidebar();
                 <div class="grid md:grid-cols-2 gap-8">
                     
                     <!-- Left: Submission details -->
-                    <div class="space-y-5 max-h-[60vh] overflow-y-auto pr-1">
+                    <div class="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
                         <!-- Student details -->
-                        <div class="bg-muted/10 border border-border/30 rounded-xl p-5 flex items-center gap-4">
-                            <img src="<?php echo htmlspecialchars($selected_part['student_avatar'] ?? 'Frontend/public/placeholder-user.jpg'); ?>" class="w-12 h-12 rounded-full border bg-muted flex-shrink-0">
+                        <div class="bg-muted/10 border border-border/30 rounded-xl p-3 flex items-center gap-3">
+                            <img src="<?php echo htmlspecialchars($selected_part['student_avatar'] ?? 'Frontend/public/placeholder-user.jpg'); ?>" class="w-10 h-10 rounded-full border bg-muted flex-shrink-0">
                             <div class="min-w-0">
                                 <h4 class="font-bold text-sm text-foreground truncate"><?php echo htmlspecialchars($selected_part['student_name']); ?></h4>
-                                <p class="text-xs text-muted-foreground leading-none mt-1">Presentado el <?php echo date('d/m/Y H:i', strtotime($selected_part['submitted_at'])); ?></p>
+                                <p class="text-xs text-muted-foreground leading-none mt-0.5">Presentado el <?php echo date('d/m/Y H:i', strtotime($selected_part['submitted_at'])); ?></p>
                             </div>
                         </div>
 
                         <!-- Requirements -->
-                        <div class="bg-muted/10 border border-border/30 rounded-xl p-5 text-xs space-y-1">
+                        <div class="bg-muted/10 border border-border/30 rounded-xl p-3 text-xs">
                             <p class="text-muted-foreground leading-none text-xs">
-                                Estilos del Evento: <strong class="text-foreground"><?php echo htmlspecialchars($selected_part['music_styles']); ?></strong>
+                                Estilos: <strong class="text-foreground"><?php echo htmlspecialchars($selected_part['music_styles']); ?></strong>
                             </p>
                         </div>
 
-                        <!-- Setlist tracks -->
-                        <div class="bg-muted/10 border border-border/30 rounded-xl p-5 space-y-4">
-                            <h5 class="text-sm font-bold text-foreground flex items-center gap-2">
-                                <i data-lucide="music" class="h-4.5 w-4.5 text-primary"></i>
-                                Setlist Propuesto
+                        <!-- Setlist Link -->
+                        <div class="bg-muted/10 border border-border/30 rounded-xl p-3 space-y-2">
+                            <h5 class="text-xs font-bold text-foreground flex items-center gap-1.5">
+                                <i data-lucide="link" class="h-3.5 w-3.5 text-primary"></i>
+                                Enlace del Set
                             </h5>
-                            
-                            <div class="space-y-2">
-                                <?php foreach ($selected_tracks as $track): ?>
-                                    <div class="flex items-center justify-between p-3 rounded bg-muted/20 border border-border/30 text-xs">
-                                        <div class="flex items-center gap-3 min-w-0">
-                                            <span class="w-6 h-6 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-bold text-xs"><?php echo $track['position']; ?></span>
-                                            <div class="min-w-0">
-                                                <p class="font-bold text-foreground truncate text-xs leading-tight"><?php echo htmlspecialchars($track['track_name']); ?></p>
-                                                <p class="text-muted-foreground text-xs truncate leading-none mt-1"><?php echo htmlspecialchars($track['artist']); ?></p>
-                                            </div>
-                                        </div>
-                                        <div class="text-xs text-muted-foreground text-right">
-                                            <span><?php echo $track['bpm']; ?> BPM</span>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
+                            <div class="p-2 rounded-lg bg-muted/20 border border-border/30 text-center">
+                                <a href="<?php echo htmlspecialchars($selected_part['set_url']); ?>" target="_blank" class="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors font-semibold text-xs max-w-full">
+                                    <i data-lucide="external-link" class="h-3.5 w-3.5 flex-shrink-0"></i>
+                                    <span class="truncate"><?php echo htmlspecialchars($selected_part['set_url']); ?></span>
+                                </a>
                             </div>
                         </div>
 
                         <!-- Justification -->
-                        <div class="bg-muted/10 border border-border/30 rounded-xl p-5 space-y-2">
-                            <h5 class="text-sm font-bold text-foreground">Justificación</h5>
-                            <p class="text-xs text-muted-foreground leading-relaxed bg-black/10 p-3 rounded border border-border/30 max-h-[140px] overflow-y-auto">
+                        <div class="bg-muted/10 border border-border/30 rounded-xl p-3 space-y-1.5">
+                            <h5 class="text-xs font-bold text-foreground">Justificación</h5>
+                            <p class="text-xs text-muted-foreground leading-relaxed bg-black/10 p-2.5 rounded border border-border/30 max-h-[120px] overflow-y-auto">
                                 <?php echo nl2br(htmlspecialchars($selected_part['justification'])); ?>
                             </p>
                         </div>
@@ -544,12 +564,12 @@ render_sidebar();
                         <!-- Textarea feedback -->
                         <div class="space-y-1.5">
                             <label for="feedback" class="text-xs font-semibold text-foreground">Feedback del Profesor</label>
-                            <textarea id="feedback" name="feedback" required rows="3" placeholder="Comenta la progresión de BPMs, transiciones armónicas sugeridas..." class="w-full bg-input border border-border rounded-lg px-3 py-2 text-xs text-foreground placeholder:text-muted-foreground resize-none focus:ring-1 focus:ring-primary focus:outline-none"></textarea>
+                            <textarea id="feedback" name="feedback" required rows="3" placeholder="Comenta la progresión de BPMs, transiciones armónicas sugeridas..." class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground resize-none focus:ring-1 focus:ring-primary focus:outline-none"></textarea>
                         </div>
 
                         <!-- Actions Buttons -->
                         <div class="flex items-center justify-end gap-3 pt-2 border-t border-[#2D3139]/40 flex-shrink-0">
-                            <a href="teacher_simulator.php?tab=pending" class="bg-transparent hover:bg-muted/10 border border-border text-foreground font-semibold px-4 py-2 rounded-lg text-xs transition-colors flex items-center justify-center">
+                            <a href="teacher_simulator.php?tab=pending" class="bg-transparent hover:bg-muted/10 border border-border text-foreground font-semibold px-4 py-2 rounded-lg text-xs transition-colors flex items-center justify-center w-full sm:w-auto">
                                 Cancelar
                             </a>
                             <button type="submit" class="bg-[#00F2FF] text-[#0F1115] font-bold px-4 py-2 rounded-lg text-xs hover:opacity-90 transition-colors flex items-center justify-center gap-1.5 shadow-lg shadow-primary/10">
@@ -609,7 +629,38 @@ function updateEventScores() {
     document.getElementById('ev-rep-badge').innerText = `+${rep} Rep`;
 }
 
-function updateCreateEventSliders() {
+
+    function toggleCustomDropdown(listId) {
+        // Close others first
+        document.querySelectorAll('[id$="_list"]').forEach(el => {
+            if (el.id !== listId) el.classList.add('hidden');
+        });
+        const list = document.getElementById(listId);
+        if (list) {
+            list.classList.toggle('hidden');
+        }
+    }
+
+    function selectCustomOption(selectId, value, text) {
+        const select = document.getElementById(selectId);
+        if (select) {
+            select.value = value;
+        }
+        const display = document.getElementById(selectId + '_display');
+        if (display) {
+            display.innerText = text;
+        }
+        document.getElementById(selectId + '_list').classList.add('hidden');
+    }
+
+    // Close custom dropdowns when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.custom-select-wrapper')) {
+            document.querySelectorAll('[id$="_list"]').forEach(el => el.classList.add('hidden'));
+        }
+    });
+
+    function updateCreateEventSliders() {
     const repSlider = document.getElementById('rep-slider');
     const paySlider = document.getElementById('pay-slider');
     

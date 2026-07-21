@@ -33,9 +33,7 @@ if (!empty($part_id)) {
     $selected_part = $stmt->fetch();
     
     if ($selected_part) {
-        $stmt_tr = $pdo->prepare("SELECT * FROM setlist_tracks WHERE participation_id = ? ORDER BY position ASC");
-        $stmt_tr->execute([$part_id]);
-        $selected_tracks = $stmt_tr->fetchAll();
+        // No extra queries needed since set_url is in ep
     }
 }
 
@@ -77,17 +75,23 @@ render_sidebar();
 ?>
 
 <!-- Main Content Area -->
-<div class="flex-1 flex flex-col min-w-0 bg-background">
+<div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
     <!-- Header -->
-    <header class="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/95 backdrop-blur px-6 py-4">
-        <div>
-            <h1 class="text-2xl font-bold text-foreground">Evaluaciones Pendientes</h1>
-            <p class="text-sm text-muted-foreground">Califica trabajos y setlists de simulador entregados por los alumnos</p>
+    <header class="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground ">Evaluaciones Pendientes</h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">Califica trabajos y setlists de simulador entregados por los alumnos</p>
+            </div>
         </div>
+        
     </header>
 
     <!-- Content -->
-    <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+    <div class="p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
         
         <?php if ($success === 'set_evaluated'): ?>
             <div class="bg-success/10 border border-success/20 text-success text-sm rounded-lg p-3">
@@ -231,7 +235,7 @@ render_sidebar();
         <!-- Modal panel matching screenshot but larger -->
         <div class="w-full max-w-[540px] bg-[#15181C] border border-[#2D3139] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
             <!-- Header -->
-            <div class="flex items-center justify-between px-8 py-5 border-b border-[#2D3139]/40 flex-shrink-0">
+            <div class="flex items-center justify-between px-4 sm:px-8 py-4 sm:py-5 border-b border-[#2D3139]/40 flex-shrink-0">
                 <h3 class="text-base font-extrabold text-foreground truncate">Evaluar Set: <?php echo htmlspecialchars($selected_set['title']); ?></h3>
                 <a href="teacher_evaluations.php" class="text-muted-foreground hover:text-foreground p-1 transition-colors">
                     <i data-lucide="x" class="h-5 w-5"></i>
@@ -239,11 +243,11 @@ render_sidebar();
             </div>
 
             <!-- Modal Content - Scrollable if screen too small -->
-            <div class="p-8 overflow-y-auto space-y-6 flex-1 select-none">
+            <div class="p-4 sm:p-8 overflow-y-auto space-y-6 flex-1 select-none">
                 
                 <!-- Student Info Card -->
-                <div class="bg-muted/10 border border-border/30 rounded-xl p-5 flex items-center justify-between">
-                    <div class="flex items-center gap-4">
+                <div class="bg-muted/10 border border-border/30 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
                         <img src="<?php echo htmlspecialchars($selected_set['student_avatar'] ?? 'Frontend/public/placeholder-user.jpg'); ?>" class="w-12 h-12 rounded-full border bg-muted flex-shrink-0">
                         <div class="min-w-0">
                             <h4 class="font-bold text-sm text-foreground leading-none truncate"><?php echo htmlspecialchars($selected_set['student_name']); ?></h4>
@@ -252,7 +256,7 @@ render_sidebar();
                             </p>
                         </div>
                     </div>
-                    <a href="<?php echo htmlspecialchars($selected_set['url']); ?>" target="_blank" class="inline-flex items-center gap-2 border border-border bg-[#252830] hover:bg-[#2D3139] text-foreground text-xs font-semibold px-4 py-2 rounded-lg transition-colors flex-shrink-0">
+                    <a href="<?php echo htmlspecialchars($selected_set['url']); ?>" target="_blank" class="inline-flex items-center justify-center gap-2 border border-border bg-[#252830] hover:bg-[#2D3139] text-foreground text-xs font-semibold px-4 py-2 rounded-lg transition-colors flex-shrink-0 w-full sm:w-auto">
                         <i data-lucide="external-link" class="h-4 w-4"></i>
                         <span>Escuchar</span>
                     </a>
@@ -334,12 +338,12 @@ render_sidebar();
                     </div>
 
                     <!-- Final Score Panel matching design but larger -->
-                    <div class="bg-[#102A30] border border-primary/20 rounded-xl p-5 flex items-center justify-between">
+                    <div class="bg-[#102A30] border border-primary/20 rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div>
                             <h4 class="font-bold text-base text-foreground">Puntuación Final</h4>
                             <p class="text-xs text-muted-foreground mt-0.5">Promedio de los 4 criterios</p>
                         </div>
-                        <div class="text-right space-y-1 flex flex-col items-end">
+                        <div class="w-full sm:w-auto text-left sm:text-right space-y-1 flex flex-row sm:flex-col items-center justify-between sm:items-end gap-2 sm:gap-0 mt-2 sm:mt-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-primary/20">
                             <h3 id="final-score" class="text-4xl font-black text-primary leading-none">5.0</h3>
                             <div class="flex gap-1.5 pt-1.5">
                                 <span id="xp-badge" class="px-2.5 py-1 bg-primary/10 border border-primary/20 text-primary text-[11px] font-bold rounded">+125 XP</span>
@@ -355,11 +359,11 @@ render_sidebar();
                     </div>
 
                     <!-- Actions Buttons -->
-                    <div class="flex items-center justify-end gap-3 pt-3 border-t border-[#2D3139]/40 flex-shrink-0">
-                        <a href="teacher_evaluations.php" class="bg-transparent hover:bg-muted/10 border border-border text-foreground font-semibold px-5 py-2.5 rounded-lg text-sm transition-colors flex items-center justify-center">
+                    <div class="flex flex-col-reverse sm:flex-row items-center justify-end gap-3 pt-4 border-t border-[#2D3139]/40 flex-shrink-0">
+                        <a href="teacher_evaluations.php" class="bg-transparent hover:bg-muted/10 border border-border text-foreground font-semibold px-5 py-2.5 rounded-lg text-sm transition-colors flex items-center justify-center w-full sm:w-auto">
                             Cancelar
                         </a>
-                        <button type="submit" class="bg-primary text-primary-foreground font-bold px-5 py-2.5 rounded-lg text-sm hover:bg-primary/95 transition-colors flex items-center justify-center gap-1.5 shadow-lg shadow-primary/10">
+                        <button type="submit" class="bg-primary text-primary-foreground font-bold px-5 py-2.5 rounded-lg text-sm hover:bg-primary/95 transition-colors flex items-center justify-center gap-1.5 shadow-lg shadow-primary/10 w-full sm:w-auto">
                             <i data-lucide="check-circle" class="h-4.5 w-4.5"></i>
                             Enviar Evaluación
                         </button>
@@ -376,7 +380,7 @@ render_sidebar();
         <!-- Modal panel - Larger -->
         <div class="w-full max-w-[760px] bg-[#15181C] border border-[#2D3139] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[95vh]">
             <!-- Header -->
-            <div class="flex items-center justify-between px-8 py-5 border-b border-[#2D3139]/40 flex-shrink-0">
+            <div class="flex items-center justify-between px-4 sm:px-8 py-4 sm:py-5 border-b border-[#2D3139]/40 flex-shrink-0">
                 <h3 class="text-base font-extrabold text-foreground truncate">Evaluar Evento: <?php echo htmlspecialchars($selected_part['event_name']); ?></h3>
                 <a href="teacher_evaluations.php" class="text-muted-foreground hover:text-foreground p-1 transition-colors">
                     <i data-lucide="x" class="h-5 w-5"></i>
@@ -384,56 +388,45 @@ render_sidebar();
             </div>
 
             <!-- Content Area - 2 Column Split inside scrollable modal -->
-            <div class="p-8 overflow-y-auto flex-1 select-none space-y-6">
+            <div class="p-4 sm:p-8 overflow-y-auto flex-1 select-none space-y-6">
                 <div class="grid md:grid-cols-2 gap-8">
                     
                     <!-- Left: Submission details -->
-                    <div class="space-y-5 max-h-[60vh] overflow-y-auto pr-1">
+                    <div class="space-y-3 max-h-[60vh] overflow-y-auto pr-1">
                         <!-- Student details -->
-                        <div class="bg-muted/10 border border-border/30 rounded-xl p-5 flex items-center gap-4">
-                            <img src="<?php echo htmlspecialchars($selected_part['student_avatar'] ?? 'Frontend/public/placeholder-user.jpg'); ?>" class="w-12 h-12 rounded-full border bg-muted flex-shrink-0">
+                        <div class="bg-muted/10 border border-border/30 rounded-xl p-3 flex items-center gap-3">
+                            <img src="<?php echo htmlspecialchars($selected_part['student_avatar'] ?? 'Frontend/public/placeholder-user.jpg'); ?>" class="w-10 h-10 rounded-full border bg-muted flex-shrink-0">
                             <div class="min-w-0">
                                 <h4 class="font-bold text-sm text-foreground truncate"><?php echo htmlspecialchars($selected_part['student_name']); ?></h4>
-                                <p class="text-xs text-muted-foreground leading-none mt-1">Presentado el <?php echo date('d/m/Y H:i', strtotime($selected_part['submitted_at'])); ?></p>
+                                <p class="text-xs text-muted-foreground leading-none mt-0.5">Presentado el <?php echo date('d/m/Y H:i', strtotime($selected_part['submitted_at'])); ?></p>
                             </div>
                         </div>
 
                         <!-- Requirements -->
-                        <div class="bg-muted/10 border border-border/30 rounded-xl p-5 text-xs space-y-1">
+                        <div class="bg-muted/10 border border-border/30 rounded-xl p-3 text-xs">
                             <p class="text-muted-foreground leading-none text-xs">
-                                Estilos del Evento: <strong class="text-foreground"><?php echo htmlspecialchars($selected_part['music_styles']); ?></strong>
+                                Estilos: <strong class="text-foreground"><?php echo htmlspecialchars($selected_part['music_styles']); ?></strong>
                             </p>
                         </div>
 
-                        <!-- Setlist tracks -->
-                        <div class="bg-muted/10 border border-border/30 rounded-xl p-5 space-y-4">
-                            <h5 class="text-sm font-bold text-foreground flex items-center gap-2">
-                                <i data-lucide="music" class="h-4.5 w-4.5 text-primary"></i>
-                                Setlist Propuesto
+                        <!-- Setlist Link -->
+                        <div class="bg-muted/10 border border-border/30 rounded-xl p-3 space-y-2">
+                            <h5 class="text-xs font-bold text-foreground flex items-center gap-1.5">
+                                <i data-lucide="link" class="h-3.5 w-3.5 text-primary"></i>
+                                Enlace del Set
                             </h5>
-                            
-                            <div class="space-y-2">
-                                <?php foreach ($selected_tracks as $track): ?>
-                                    <div class="flex items-center justify-between p-3 rounded bg-muted/20 border border-border/30 text-xs">
-                                        <div class="flex items-center gap-3 min-w-0">
-                                            <span class="w-6 h-6 rounded-full bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-bold text-xs"><?php echo $track['position']; ?></span>
-                                            <div class="min-w-0">
-                                                <p class="font-bold text-foreground truncate text-xs leading-tight"><?php echo htmlspecialchars($track['track_name']); ?></p>
-                                                <p class="text-muted-foreground text-xs truncate leading-none mt-1"><?php echo htmlspecialchars($track['artist']); ?></p>
-                                            </div>
-                                        </div>
-                                        <div class="text-xs text-muted-foreground text-right">
-                                            <span><?php echo $track['bpm']; ?> BPM</span>
-                                        </div>
-                                    </div>
-                                <?php endforeach; ?>
+                            <div class="p-2 rounded-lg bg-muted/20 border border-border/30 text-center">
+                                <a href="<?php echo htmlspecialchars($selected_part['set_url']); ?>" target="_blank" class="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors font-semibold text-xs max-w-full">
+                                    <i data-lucide="external-link" class="h-3.5 w-3.5 flex-shrink-0"></i>
+                                    <span class="truncate"><?php echo htmlspecialchars($selected_part['set_url']); ?></span>
+                                </a>
                             </div>
                         </div>
 
                         <!-- Justification -->
-                        <div class="bg-muted/10 border border-border/30 rounded-xl p-5 space-y-2">
-                            <h5 class="text-sm font-bold text-foreground">Justificación</h5>
-                            <p class="text-xs text-muted-foreground leading-relaxed bg-black/10 p-3 rounded border border-border/30 max-h-[140px] overflow-y-auto">
+                        <div class="bg-muted/10 border border-border/30 rounded-xl p-3 space-y-1.5">
+                            <h5 class="text-xs font-bold text-foreground">Justificación</h5>
+                            <p class="text-xs text-muted-foreground leading-relaxed bg-black/10 p-2.5 rounded border border-border/30 max-h-[120px] overflow-y-auto">
                                 <?php echo nl2br(htmlspecialchars($selected_part['justification'])); ?>
                             </p>
                         </div>
@@ -499,7 +492,7 @@ render_sidebar();
                                 <h4 class="font-bold text-sm text-foreground leading-none">Puntuación Final</h4>
                                 <p class="text-xs text-muted-foreground mt-1">Promedio de los 5 criterios</p>
                             </div>
-                            <div class="text-right space-y-1 flex flex-col items-end">
+                            <div class="w-full sm:w-auto text-left sm:text-right space-y-1 flex flex-row sm:flex-col items-center justify-between sm:items-end gap-2 sm:gap-0 mt-2 sm:mt-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-primary/20">
                                 <h3 id="ev-final-score" class="text-3xl font-black text-primary leading-none">7.0</h3>
                                 <div class="flex gap-1.5 pt-1">
                                     <span id="ev-xp-badge" class="px-2 py-0.5 bg-primary/10 border border-primary/20 text-primary text-[10px] font-bold rounded">+210 XP</span>

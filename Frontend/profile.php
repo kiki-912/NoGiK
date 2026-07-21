@@ -21,17 +21,23 @@ render_sidebar();
 ?>
 
 <!-- Main Content Area -->
-<div class="flex-1 flex flex-col min-w-0 bg-background">
+<div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
     <!-- Header -->
-    <header class="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/95 backdrop-blur px-6 py-4">
-        <div>
-            <h1 class="text-2xl font-bold text-foreground">Mi Perfil</h1>
-            <p class="text-sm text-muted-foreground">Administra tu información personal y configuraciones de la cuenta</p>
+    <header class="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground ">Mi Perfil</h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">Administra tu información personal y configuraciones de la cuenta</p>
+            </div>
         </div>
+        
     </header>
 
     <!-- Content Area -->
-    <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+    <div class="p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
         
         <?php if ($success === 'profile_updated'): ?>
             <div class="bg-success/10 border border-success/20 text-success text-sm rounded-lg p-3">
@@ -462,8 +468,9 @@ function saveCroppedImage() {
     ctx.fillStyle = '#0F1115';
     ctx.fillRect(0, 0, 256, 256);
     
-    const containerW = 360;
-    const containerH = 240;
+    const workspace = document.getElementById('crop-workspace');
+    const containerW = workspace.offsetWidth;
+    const containerH = workspace.offsetHeight;
     const cropSquareSize = 180;
     const cropX = (containerW - cropSquareSize) / 2;
     const cropY = (containerH - cropSquareSize) / 2;
@@ -531,7 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
 
         <!-- Crop workspace -->
-        <div class="relative w-[360px] h-[240px] bg-[#090A0C] border border-border/40 rounded-xl overflow-hidden cursor-move select-none mx-auto"
+        <div class="relative w-full max-w-[360px] h-[240px] bg-[#090A0C] border border-border/40 rounded-xl overflow-hidden cursor-move select-none mx-auto"
              id="crop-workspace"
              onmousedown="startDragging(event)"
              onmousemove="dragImage(event)"

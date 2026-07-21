@@ -52,26 +52,32 @@ render_sidebar();
 ?>
 
 <!-- Main Content Area -->
-<div class="flex-1 flex flex-col min-w-0 bg-background">
+<div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
     <!-- Header -->
-    <header class="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/95 backdrop-blur px-6 py-4">
-        <div>
-            <h1 class="text-2xl font-bold text-foreground">
+    <header class="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground ">
                 Bienvenido, <?php echo htmlspecialchars(explode(' ', $student['name'])[0]); ?>
             </h1>
-            <p class="text-sm text-muted-foreground">Tu resumen de progreso como DJ</p>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">Tu resumen de progreso como DJ</p>
+            </div>
         </div>
-        <a href="student_sets.php" class="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold px-4 py-2 rounded-lg text-sm hover:bg-primary/90 transition-colors">
+        
+        <a href="student_sets.php" class="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm hover:bg-primary/90 transition-colors shrink-0">
             <i data-lucide="music" class="h-4 w-4"></i>
             Subir Set
         </a>
     </header>
 
     <!-- Content -->
-    <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+    <div class="p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
         
         <!-- Level & XP Banner -->
-        <div class="rounded-xl border border-border/50 bg-gradient-to-r from-card via-card to-primary/5 p-6 overflow-hidden">
+        <div class="rounded-xl border border-border/50 bg-gradient-to-r from-card via-card to-primary/5 p-4 sm:p-6 overflow-hidden">
             <div class="flex flex-col md:flex-row md:items-center gap-6">
                 <!-- Level Circle -->
                 <div class="relative flex-shrink-0 mx-auto md:mx-0">
@@ -107,9 +113,9 @@ render_sidebar();
         </div>
 
         <!-- Stats Grid -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <!-- Stat 1 -->
-            <div class="bg-card border border-border/50 rounded-xl p-5 flex items-center gap-4">
+            <div class="bg-card border border-border/50 rounded-xl p-4 sm:p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                 <div class="p-3 bg-primary/10 rounded-lg text-primary">
                     <i data-lucide="trophy" class="h-6 w-6"></i>
                 </div>
@@ -120,7 +126,7 @@ render_sidebar();
                 </div>
             </div>
             <!-- Stat 2 -->
-            <div class="bg-card border border-border/50 rounded-xl p-5 flex items-center gap-4">
+            <div class="bg-card border border-border/50 rounded-xl p-4 sm:p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                 <div class="p-3 bg-secondary/10 rounded-lg text-secondary">
                     <i data-lucide="music" class="h-6 w-6"></i>
                 </div>
@@ -131,7 +137,7 @@ render_sidebar();
                 </div>
             </div>
             <!-- Stat 3 -->
-            <div class="bg-card border border-border/50 rounded-xl p-5 flex items-center gap-4">
+            <div class="bg-card border border-border/50 rounded-xl p-4 sm:p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                 <div class="p-3 bg-success/10 rounded-lg text-success">
                     <i data-lucide="graduation-cap" class="h-6 w-6"></i>
                 </div>
@@ -142,7 +148,7 @@ render_sidebar();
                 </div>
             </div>
             <!-- Stat 4 -->
-            <div class="bg-card border border-border/50 rounded-xl p-5 flex items-center gap-4">
+            <div class="bg-card border border-border/50 rounded-xl p-4 sm:p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
                 <div class="p-3 bg-[#FF6B35]/10 rounded-lg text-[#FF6B35]">
                     <i data-lucide="star" class="h-6 w-6"></i>
                 </div>
@@ -155,15 +161,15 @@ render_sidebar();
         </div>
 
         <!-- Reputation Info Banner -->
-        <div class="bg-card border border-border/50 rounded-xl p-5">
+        <div class="bg-card border border-border/50 rounded-xl p-4 sm:p-5">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-full flex items-center justify-center text-background font-bold text-lg" style="background-color: <?php echo $tier['color']; ?>">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center text-background font-bold text-lg flex-shrink-0" style="background-color: <?php echo $tier['color']; ?>">
                     <i data-lucide="award" class="h-6 w-6"></i>
                 </div>
-                <div class="flex-1">
-                    <div class="flex items-center gap-2">
-                        <h4 class="font-bold text-foreground"><?php echo $tier['name']; ?></h4>
-                        <span class="text-xs text-muted-foreground px-2 py-0.5 bg-muted rounded-full">Rep: <?php echo $student['reputation']; ?></span>
+                <div class="flex-1 min-w-0">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <h4 class="font-bold text-foreground truncate"><?php echo $tier['name']; ?></h4>
+                        <span class="text-xs text-muted-foreground px-2 py-0.5 bg-muted rounded-full flex-shrink-0">Rep: <?php echo $student['reputation']; ?></span>
                     </div>
                     <p class="text-sm text-muted-foreground mt-1"><?php echo $tier['desc']; ?></p>
                 </div>
@@ -174,7 +180,7 @@ render_sidebar();
         <div class="grid lg:grid-cols-2 gap-6">
             
             <!-- Skills list -->
-            <div class="bg-card border border-border/50 rounded-xl p-6 space-y-4">
+            <div class="bg-card border border-border/50 rounded-xl p-4 sm:p-6 space-y-4">
                 <div class="flex items-center justify-between">
                     <h3 class="font-bold text-lg text-foreground">Progreso de Habilidades</h3>
                     <a href="student_skills.php" class="text-xs text-primary hover:underline flex items-center gap-0.5">
@@ -201,7 +207,7 @@ render_sidebar();
             </div>
 
             <!-- Upcoming Events / Classes -->
-            <div class="bg-card border border-border/50 rounded-xl p-6 space-y-4">
+            <div class="bg-card border border-border/50 rounded-xl p-4 sm:p-6 space-y-4">
                 <h3 class="font-bold text-lg text-foreground">Próximas Clases</h3>
                 
                 <?php if (empty($upcoming_classes)): ?>
@@ -236,7 +242,7 @@ render_sidebar();
         </div>
 
         <!-- Recent Sets uploaded -->
-        <div class="bg-card border border-border/50 rounded-xl p-6 space-y-4">
+        <div class="bg-card border border-border/50 rounded-xl p-4 sm:p-6 space-y-4">
             <div class="flex items-center justify-between">
                 <h3 class="font-bold text-lg text-foreground">Mis Sets Recientes</h3>
                 <a href="student_sets.php" class="text-xs text-primary hover:underline flex items-center gap-0.5">

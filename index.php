@@ -17,6 +17,7 @@ $success = $_GET['success'] ?? '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NogiK - Academia DJ</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     
     <!-- Google Fonts Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

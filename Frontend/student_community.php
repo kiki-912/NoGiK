@@ -35,17 +35,23 @@ render_sidebar();
 ?>
 
 <!-- Main Content Area -->
-<div class="flex-1 flex flex-col min-w-0 bg-background">
+<div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
     <!-- Header -->
-    <header class="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/95 backdrop-blur px-6 py-4">
-        <div>
-            <h1 class="text-2xl font-bold text-foreground">Comunidad</h1>
-            <p class="text-sm text-muted-foreground">Escucha y comenta los sets de otros alumnos de la academia</p>
+    <header class="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground ">Comunidad</h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">Escucha y comenta los sets de otros alumnos de la academia</p>
+            </div>
         </div>
+        
     </header>
 
     <!-- Content -->
-    <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+    <div class="p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
         
         <?php if ($success === 'commented'): ?>
             <div class="bg-success/10 border border-success/20 text-success text-sm rounded-lg p-3">
@@ -54,34 +60,34 @@ render_sidebar();
         <?php endif; ?>
 
         <!-- Stats Cards -->
-        <div class="grid sm:grid-cols-3 gap-4">
-            <div class="bg-card border border-border/50 rounded-xl p-4 flex items-center gap-4">
-                <div class="p-3 bg-primary/10 rounded-full text-primary">
-                    <i data-lucide="users" class="h-5 w-5"></i>
+        <div class="grid grid-cols-1 min-[480px]:grid-cols-3 gap-3 sm:gap-4">
+            <div class="bg-card border border-border/50 rounded-xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4">
+                <div class="p-2 sm:p-3 bg-primary/10 rounded-full text-primary flex-shrink-0">
+                    <i data-lucide="users" class="h-4 w-4 sm:h-5 sm:w-5"></i>
                 </div>
-                <div>
-                    <h4 class="text-xl font-bold text-foreground"><?php echo $total_students_count; ?></h4>
-                    <p class="text-xs text-muted-foreground">Alumnos activos</p>
-                </div>
-            </div>
-            
-            <div class="bg-card border border-border/50 rounded-xl p-4 flex items-center gap-4">
-                <div class="p-3 bg-secondary/10 rounded-full text-secondary">
-                    <i data-lucide="music" class="h-5 w-5"></i>
-                </div>
-                <div>
-                    <h4 class="text-xl font-bold text-foreground"><?php echo count($all_sets); ?></h4>
-                    <p class="text-xs text-muted-foreground">Sets compartidos</p>
+                <div class="min-w-0">
+                    <h4 class="text-lg sm:text-xl font-bold text-foreground leading-tight"><?php echo $total_students_count; ?></h4>
+                    <p class="text-xs text-muted-foreground truncate">Alumnos activos</p>
                 </div>
             </div>
             
-            <div class="bg-card border border-border/50 rounded-xl p-4 flex items-center gap-4">
-                <div class="p-3 bg-success/10 rounded-full text-success">
-                    <i data-lucide="message-square" class="h-5 w-5"></i>
+            <div class="bg-card border border-border/50 rounded-xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4">
+                <div class="p-2 sm:p-3 bg-secondary/10 rounded-full text-secondary flex-shrink-0">
+                    <i data-lucide="music" class="h-4 w-4 sm:h-5 sm:w-5"></i>
                 </div>
-                <div>
-                    <h4 class="text-xl font-bold text-foreground"><?php echo $total_comments_count; ?></h4>
-                    <p class="text-xs text-muted-foreground">Comentarios totales</p>
+                <div class="min-w-0">
+                    <h4 class="text-lg sm:text-xl font-bold text-foreground leading-tight"><?php echo count($all_sets); ?></h4>
+                    <p class="text-xs text-muted-foreground truncate">Sets compartidos</p>
+                </div>
+            </div>
+            
+            <div class="bg-card border border-border/50 rounded-xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4">
+                <div class="p-2 sm:p-3 bg-success/10 rounded-full text-success flex-shrink-0">
+                    <i data-lucide="message-square" class="h-4 w-4 sm:h-5 sm:w-5"></i>
+                </div>
+                <div class="min-w-0">
+                    <h4 class="text-lg sm:text-xl font-bold text-foreground leading-tight"><?php echo $total_comments_count; ?></h4>
+                    <p class="text-xs text-muted-foreground truncate">Comentarios totales</p>
                 </div>
             </div>
         </div>
@@ -103,69 +109,72 @@ render_sidebar();
                     $stmt_c->execute([$set['id']]);
                     $comments = $stmt_c->fetchAll();
                 ?>
-                    <div class="bg-card border border-border/50 rounded-xl p-6">
-                        <div class="flex flex-col md:flex-row gap-5">
-                            <!-- Play Cover -->
-                            <a href="<?php echo htmlspecialchars($set['url']); ?>" target="_blank" class="w-24 h-24 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center flex-shrink-0 hover:from-primary/30 hover:to-secondary/30 transition-all text-primary">
-                                <i data-lucide="play" class="h-10 w-10"></i>
-                            </a>
-
-                            <!-- Card Body -->
-                            <div class="flex-1 min-w-0 space-y-2">
-                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                    <div class="flex items-center gap-3">
-                                        <img src="<?php echo htmlspecialchars($set['student_avatar'] ?? 'Frontend/public/placeholder-user.jpg'); ?>" class="w-10 h-10 rounded-full border bg-muted">
-                                        <div>
-                                            <div class="flex items-center gap-2">
-                                                <span class="font-semibold text-foreground text-sm">
-                                                    <?php echo htmlspecialchars($set['student_name']); ?>
-                                                </span>
-                                                <?php if ($is_own): ?>
-                                                    <span class="text-3xs font-semibold px-1.5 py-0.5 bg-muted text-muted-foreground rounded border border-border uppercase">Tu set</span>
-                                                <?php endif; ?>
-                                            </div>
-                                            <div class="flex items-center gap-2 text-2xs text-muted-foreground">
-                                                <span class="w-2 h-2 rounded-full" style="background-color: <?php echo $owner_tier['color']; ?>"></span>
-                                                <span><?php echo $owner_tier['name']; ?></span>
-                                                <span>•</span>
-                                                <span>Nivel <?php echo $set['level']; ?></span>
-                                            </div>
-                                        </div>
+                    <div class="bg-card border border-border/50 rounded-xl p-4">
+                        <!-- Top Header: User info & Date -->
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <div class="flex items-center gap-2.5">
+                                <img src="<?php echo htmlspecialchars($set['student_avatar'] ?? 'Frontend/public/placeholder-user.jpg'); ?>" class="w-8 h-8 rounded-full border bg-muted flex-shrink-0">
+                                <div class="min-w-0">
+                                    <div class="flex items-center gap-2">
+                                        <span class="font-bold text-foreground text-sm truncate">
+                                            <?php echo htmlspecialchars($set['student_name']); ?>
+                                        </span>
+                                        <?php if ($is_own): ?>
+                                            <span class="text-[9px] font-bold px-1.5 py-0.5 bg-muted text-muted-foreground rounded border border-border uppercase">Tu set</span>
+                                        <?php endif; ?>
                                     </div>
-                                    <span class="text-2xs text-muted-foreground">
-                                        <?php echo date('d M', strtotime($set['uploaded_at'])); ?>
-                                    </span>
+                                    <div class="flex items-center gap-1.5 text-3xs text-muted-foreground truncate">
+                                        <span class="w-1.5 h-1.5 rounded-full flex-shrink-0" style="background-color: <?php echo $owner_tier['color']; ?>"></span>
+                                        <span class="truncate"><?php echo $owner_tier['name']; ?></span>
+                                        <span>•</span>
+                                        <span class="whitespace-nowrap">Nivel <?php echo $set['level']; ?></span>
+                                    </div>
                                 </div>
+                            </div>
+                            <span class="text-3xs text-muted-foreground flex-shrink-0 self-start mt-1">
+                                <?php echo date('d M', strtotime($set['uploaded_at'])); ?>
+                            </span>
+                        </div>
 
-                                <h3 class="font-bold text-base text-foreground mt-1"><?php echo htmlspecialchars($set['title']); ?></h3>
-                                <p class="text-sm text-muted-foreground leading-relaxed line-clamp-2"><?php echo htmlspecialchars($set['description']); ?></p>
-
-                                <div class="flex flex-wrap items-center gap-3 pt-1">
-                                    <span class="px-1.5 py-0.5 bg-muted border border-border text-muted-foreground rounded text-2xs"><?php echo htmlspecialchars($set['genre']); ?></span>
-                                    <span class="flex items-center gap-1 text-xs text-muted-foreground">
-                                        <i data-lucide="clock" class="h-3.5 w-3.5"></i>
+                        <!-- Mid Section: Play button & Title/Desc -->
+                        <div class="flex flex-row gap-3">
+                            <!-- Play Cover -->
+                            <a href="<?php echo htmlspecialchars($set['url']); ?>" target="_blank" class="w-12 h-12 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br from-primary/20 to-secondary/20 flex items-center justify-center flex-shrink-0 hover:from-primary/30 hover:to-secondary/30 transition-all text-primary mt-1">
+                                <i data-lucide="play" class="h-6 w-6 sm:h-8 sm:w-8 ml-0.5"></i>
+                            </a>
+                            
+                            <!-- Card Body -->
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-bold text-sm sm:text-base text-foreground leading-tight"><?php echo htmlspecialchars($set['title']); ?></h3>
+                                <p class="text-xs text-muted-foreground mt-1 line-clamp-2 leading-relaxed"><?php echo htmlspecialchars($set['description']); ?></p>
+                                
+                                <!-- Tags -->
+                                <div class="flex flex-wrap items-center gap-2 mt-2">
+                                    <span class="px-1.5 py-0.5 bg-muted border border-border text-muted-foreground rounded text-3xs font-medium"><?php echo htmlspecialchars($set['genre']); ?></span>
+                                    <span class="flex items-center gap-1 text-3xs text-muted-foreground font-medium">
+                                        <i data-lucide="clock" class="h-3 w-3"></i>
                                         <?php echo $set['duration']; ?> min
                                     </span>
                                     <?php if ($set['overall_score']): ?>
-                                        <span class="flex items-center gap-0.5 text-xs text-[#39FF14] font-semibold bg-[#39FF14]/10 px-1.5 py-0.5 rounded">
-                                            <i data-lucide="star" class="h-3.5 w-3.5 fill-current"></i>
+                                        <span class="flex items-center gap-0.5 text-3xs text-[#39FF14] font-bold bg-[#39FF14]/10 px-1.5 py-0.5 rounded">
+                                            <i data-lucide="star" class="h-3 w-3 fill-current"></i>
                                             <?php echo round($set['overall_score'], 1); ?>
                                         </span>
                                     <?php endif; ?>
                                 </div>
-
-                                <!-- Actions -->
-                                <div class="flex items-center gap-3 pt-3 border-t border-border/30 mt-2">
-                                    <a href="<?php echo htmlspecialchars($set['url']); ?>" target="_blank" class="inline-flex items-center gap-1.5 border border-border hover:bg-muted/40 font-semibold px-3 py-1.5 rounded-lg text-xs text-foreground transition-colors">
-                                        <i data-lucide="external-link" class="h-3.5 w-3.5"></i>
-                                        Escuchar
-                                    </a>
-                                    <button onclick="toggleComments('<?php echo $set['id']; ?>')" class="inline-flex items-center gap-1.5 hover:bg-muted/40 font-semibold px-3 py-1.5 rounded-lg text-xs text-muted-foreground hover:text-foreground transition-colors">
-                                        <i data-lucide="message-square" class="h-3.5 w-3.5"></i>
-                                        <span><?php echo count($comments); ?> comentarios</span>
-                                    </button>
-                                </div>
                             </div>
+                        </div>
+
+                        <!-- Footer Actions -->
+                        <div class="flex items-center gap-3 pt-3 mt-3 border-t border-border/40">
+                            <a href="<?php echo htmlspecialchars($set['url']); ?>" target="_blank" class="inline-flex items-center gap-1.5 border border-border hover:bg-muted/40 font-semibold px-3 py-1.5 rounded-lg text-xs text-foreground transition-colors">
+                                <i data-lucide="external-link" class="h-3.5 w-3.5"></i>
+                                Escuchar
+                            </a>
+                            <button onclick="toggleComments('<?php echo $set['id']; ?>')" class="inline-flex items-center gap-1.5 hover:bg-muted/40 font-semibold px-3 py-1.5 rounded-lg text-xs text-muted-foreground hover:text-foreground transition-colors ml-auto">
+                                <i data-lucide="message-square" class="h-3.5 w-3.5"></i>
+                                <span><?php echo count($comments); ?> comentarios</span>
+                            </button>
                         </div>
 
                         <!-- Comments Section (Toggled by JS) -->

@@ -33,20 +33,26 @@ if (!empty($id)) {
     render_header("Detalle de Set - NogiK");
     render_sidebar();
     ?>
-    <div class="flex-1 flex flex-col min-w-0 bg-background">
+    <div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
         <!-- Header -->
-        <header class="sticky top-0 z-10 flex items-center gap-4 border-b border-border bg-background/95 backdrop-blur px-6 py-4">
+        <header class="sticky top-0 z-40 flex flex-wrap items-center gap-4 gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground "><?php echo htmlspecialchars($set['title']); ?></h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">Detalles y feedback de evaluación</p>
+            </div>
+        </div>
             <a href="student_sets.php" class="p-1.5 hover:bg-muted/30 rounded-lg text-muted-foreground hover:text-foreground">
                 <i data-lucide="arrow-left" class="h-5 w-5"></i>
             </a>
-            <div class="flex-1">
-                <h1 class="text-2xl font-bold text-foreground"><?php echo htmlspecialchars($set['title']); ?></h1>
-                <p class="text-sm text-muted-foreground">Detalles y feedback de evaluación</p>
-            </div>
+            
         </header>
 
         <!-- Content -->
-        <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+        <div class="p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
             
             <?php if ($success === 'commented'): ?>
                 <div class="bg-success/10 border border-success/20 text-success text-sm rounded-lg p-3">
@@ -224,20 +230,26 @@ if ($upload) {
     render_header("Subir Set - NogiK");
     render_sidebar();
     ?>
-    <div class="flex-1 flex flex-col min-w-0 bg-background">
+    <div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
         <!-- Header -->
-        <header class="sticky top-0 z-10 flex items-center gap-4 border-b border-border bg-background/95 backdrop-blur px-6 py-4">
+        <header class="sticky top-0 z-40 flex flex-wrap items-center gap-4 gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground ">Subir Set</h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">Comparte tu mezcla para recibir feedback de los profesores</p>
+            </div>
+        </div>
             <a href="student_sets.php" class="p-1.5 hover:bg-muted/30 rounded-lg text-muted-foreground hover:text-foreground">
                 <i data-lucide="arrow-left" class="h-5 w-5"></i>
             </a>
-            <div class="flex-1">
-                <h1 class="text-2xl font-bold text-foreground">Subir Set</h1>
-                <p class="text-sm text-muted-foreground">Comparte tu mezcla para recibir feedback de los profesores</p>
-            </div>
+            
         </header>
 
         <!-- Content -->
-        <div class="p-6 max-w-2xl mx-auto space-y-6 overflow-y-auto max-h-[calc(100vh-80px)] w-full">
+        <div class="p-4 sm:p-6 max-w-2xl mx-auto space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
             <form action="../Backend/scripts/actions.php" method="POST" class="space-y-6">
                 <input type="hidden" name="action" value="upload_set">
                 
@@ -259,13 +271,24 @@ if ($upload) {
 
                     <div class="grid sm:grid-cols-2 gap-4">
                         <div class="space-y-1.5">
-                            <label for="genre" class="text-sm font-medium text-foreground">Género</label>
-                            <select id="genre" name="genre" required class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
-                                <option value="" disabled selected>Selecciona un género</option>
-                                <?php foreach ($genres as $g): ?>
-                                    <option value="<?php echo $g; ?>"><?php echo $g; ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            <label class="text-sm font-medium text-foreground">Género</label>
+                            <div class="relative custom-select">
+                                <input type="hidden" id="genre" name="genre" required>
+                                <button type="button" class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none flex justify-between items-center transition-colors hover:border-primary/50 select-button">
+                                    <span class="select-text text-muted-foreground truncate">Selecciona un género</span>
+                                    <i data-lucide="chevron-down" class="h-4 w-4 opacity-50 flex-shrink-0"></i>
+                                </button>
+                                <!-- Dropdown menu -->
+                                <div class="absolute z-50 w-full mt-1 bg-popover border border-border rounded-lg shadow-xl overflow-hidden opacity-0 invisible transform -translate-y-2 transition-all duration-200 select-menu">
+                                    <div class="max-h-60 overflow-y-auto py-1">
+                                        <?php foreach ($genres as $g): ?>
+                                            <button type="button" class="w-full text-left px-3 py-2 text-sm hover:bg-primary/10 hover:text-primary transition-colors select-option" data-value="<?php echo $g; ?>">
+                                                <?php echo $g; ?>
+                                            </button>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                         <div class="space-y-1.5">
                             <label for="duration" class="text-sm font-medium text-foreground">Duración (minutos)</label>
@@ -298,6 +321,86 @@ if ($upload) {
             </form>
         </div>
     </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Custom Select Logic
+        const customSelects = document.querySelectorAll('.custom-select');
+        
+        customSelects.forEach(selectContainer => {
+            const button = selectContainer.querySelector('.select-button');
+            const menu = selectContainer.querySelector('.select-menu');
+            const textSpan = selectContainer.querySelector('.select-text');
+            const hiddenInput = selectContainer.querySelector('input[type="hidden"]');
+            const options = selectContainer.querySelectorAll('.select-option');
+            
+            // Toggle menu
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Close other open menus
+                document.querySelectorAll('.custom-select .select-menu').forEach(otherMenu => {
+                    if (otherMenu !== menu) {
+                        closeMenu(otherMenu);
+                    }
+                });
+                
+                const isOpen = !menu.classList.contains('invisible');
+                if (isOpen) {
+                    closeMenu(menu);
+                } else {
+                    openMenu(menu);
+                    button.classList.add('border-primary/50', 'ring-1', 'ring-primary');
+                }
+            });
+            
+            // Select option
+            options.forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const value = option.getAttribute('data-value');
+                    const text = option.innerText.trim();
+                    
+                    hiddenInput.value = value;
+                    textSpan.innerText = text;
+                    textSpan.classList.remove('text-muted-foreground');
+                    textSpan.classList.add('text-foreground');
+                    
+                    closeMenu(menu);
+                });
+            });
+        });
+        
+        // Close menus when clicking outside
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.custom-select .select-menu').forEach(menu => {
+                closeMenu(menu);
+            });
+        });
+        
+        function openMenu(menu) {
+            menu.classList.remove('invisible', 'opacity-0', '-translate-y-2');
+            menu.classList.add('opacity-100', 'translate-y-0');
+        }
+        
+        function closeMenu(menu) {
+            menu.classList.remove('opacity-100', 'translate-y-0');
+            menu.classList.add('opacity-0', '-translate-y-2');
+            
+            // Delay invisible to allow animation to finish
+            setTimeout(() => {
+                if (menu.classList.contains('opacity-0')) {
+                    menu.classList.add('invisible');
+                }
+            }, 200);
+            
+            const button = menu.closest('.custom-select').querySelector('.select-button');
+            button.classList.remove('border-primary/50', 'ring-1', 'ring-primary');
+        }
+    });
+</script>
     <?php
     render_footer();
     exit();
@@ -322,21 +425,27 @@ render_sidebar();
 ?>
 
 <!-- Main Content Area -->
-<div class="flex-1 flex flex-col min-w-0 bg-background">
+<div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
     <!-- Header -->
-    <header class="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/95 backdrop-blur px-6 py-4">
-        <div>
-            <h1 class="text-2xl font-bold text-foreground">Mis Sets</h1>
-            <p class="text-sm text-muted-foreground"><?php echo count($sets); ?> sets subidos, <?php echo count($evaluated); ?> evaluados</p>
+    <header class="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground ">Mis Sets</h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate"><?php echo count($sets); ?> sets subidos, <?php echo count($evaluated); ?> evaluados</p>
+            </div>
         </div>
-        <a href="student_sets.php?upload=1" class="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold px-4 py-2 rounded-lg text-sm hover:bg-primary/90 transition-colors">
+        
+        <a href="student_sets.php?upload=1" class="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm hover:bg-primary/90 transition-colors shrink-0">
             <i data-lucide="plus" class="h-4 w-4"></i>
             Subir Set
         </a>
     </header>
 
     <!-- Content -->
-    <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+    <div class="p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
         
         <?php if ($success === 'uploaded'): ?>
             <div class="bg-success/10 border border-success/20 text-success text-sm rounded-lg p-3">
@@ -421,6 +530,9 @@ render_sidebar();
 
     </div>
 </div>
+
+
+
 
 <?php
 render_footer();

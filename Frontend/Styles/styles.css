@@ -19,20 +19,20 @@
 }
 
 .light {
-    --color-background: #F8FAFC;
-    --color-foreground: #1E293B;
+    --color-background: #F1F5F9; /* slate-100 for better contrast against white cards */
+    --color-foreground: #0F172A; /* slate-900 for deeper text */
     --color-card: #FFFFFF;
-    --color-card-foreground: #1E293B;
+    --color-card-foreground: #0F172A;
     --color-popover: #FFFFFF;
-    --color-popover-foreground: #1E293B;
+    --color-popover-foreground: #0F172A;
     --color-primary: #0EA5E9;
     --color-primary-foreground: #FFFFFF;
     --color-secondary: #6366F1;
     --color-secondary-foreground: #FFFFFF;
-    --color-muted: #F1F5F9;
-    --color-muted-foreground: #64748B;
-    --color-border: #E2E8F0;
-    --color-input: #F1F5F9;
+    --color-muted: #E2E8F0; /* slate-200 */
+    --color-muted-foreground: #475569; /* slate-600 */
+    --color-border: #CBD5E1; /* slate-300 so borders are visible even at 50% opacity */
+    --color-input: #E2E8F0;
     --color-ring: #0EA5E9;
 }
 
@@ -79,4 +79,351 @@ body {
 /* Progress bar customization for tailwind override */
 .progress-fill {
     transition: width 0.4s ease-out;
+}
+
+/* ===== Responsive overflow fixes ===== */
+/* Ensure no horizontal scroll and make media scale */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden !important;
+}
+img, video, iframe {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+}
+
+/* Allow flex/grid children to shrink and not force overflow */
+[class*="flex"] > *, [class*="grid"] > * {
+    min-width: 0 !important;
+}
+
+
+
+@media (max-width: 420px) {
+    /* Reduce big paddings that can cause overflow on very small screens */
+    .content, .hero, .page-header, .profile-header {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .flex-1 > header,
+    header.sticky,
+    header.static {
+        padding-left: 5rem !important;
+        padding-right: 1rem !important;
+        gap: 0.75rem !important;
+    }
+
+    .flex-1 > header .flex.items-center.justify-between,
+    header.sticky .flex.items-center.justify-between,
+    header.static .flex.items-center.justify-between {
+        min-width: 0;
+    }
+
+    .flex-1 > header h1,
+    header.sticky h1,
+    header.static h1 {
+        font-size: 1rem !important;
+        line-height: 1.2 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .flex-1 > header .flex.items-center.gap-2.flex-wrap,
+    header.sticky .flex.items-center.gap-2.flex-wrap,
+    header.static .flex.items-center.gap-2.flex-wrap {
+        flex-shrink: 0;
+        min-width: 0;
+    }
+
+    .flex-1 > header .flex.items-center.gap-2.flex-wrap > *,
+    header.sticky .flex.items-center.gap-2.flex-wrap > *,
+    header.static .flex.items-center.gap-2.flex-wrap > * {
+        min-width: 0;
+    }
+}
+
+/* Mobile sidebar drawer */
+#sidebar-menu {
+    width: 18rem;
+    max-width: 80vw;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+#sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(6px);
+    z-index: 45;
+}
+
+#sidebar-backdrop.hidden {
+    display: none;
+}
+
+/* Compact main content headers like the simulator */
+.flex-1 > header {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+}
+
+@media (min-width: 640px) {
+    .flex-1 > header {
+        padding-left: 1.25rem !important;
+        padding-right: 1.25rem !important;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+    }
+}
+
+.flex-1 > header h1 {
+    font-size: 1.125rem !important;
+}
+
+.flex-1 > header .flex-1,
+.flex-1 > header .flex-wrap {
+    min-width: 0 !important;
+    --color-card: #1A1D23;
+    --color-card-foreground: #E0E0E0;
+    --color-popover: #1A1D23;
+    --color-popover-foreground: #E0E0E0;
+    --color-primary: #00F2FF;
+    --color-primary-foreground: #0F1115;
+    --color-secondary: #7000FF;
+    --color-secondary-foreground: #E0E0E0;
+    --color-muted: #252830;
+    --color-muted-foreground: #9CA3AF;
+    --color-border: #2D3139;
+    --color-input: #252830;
+    --color-ring: #00F2FF;
+}
+
+.light {
+    --color-background: #F1F5F9; /* slate-100 for better contrast against white cards */
+    --color-foreground: #0F172A; /* slate-900 for deeper text */
+    --color-card: #FFFFFF;
+    --color-card-foreground: #0F172A;
+    --color-popover: #FFFFFF;
+    --color-popover-foreground: #0F172A;
+    --color-primary: #0EA5E9;
+    --color-primary-foreground: #FFFFFF;
+    --color-secondary: #6366F1;
+    --color-secondary-foreground: #FFFFFF;
+    --color-muted: #E2E8F0; /* slate-200 */
+    --color-muted-foreground: #475569; /* slate-600 */
+    --color-border: #CBD5E1; /* slate-300 so borders are visible even at 50% opacity */
+    --color-input: #E2E8F0;
+    --color-ring: #0EA5E9;
+}
+
+/* Base settings */
+body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: 'Inter', sans-serif;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #0F1115;
+}
+::-webkit-scrollbar-thumb {
+    background: #252830;
+    border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #2D3139;
+}
+
+/* Glassmorphism Classes */
+.glass-panel {
+    background: rgba(26, 29, 35, 0.8);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(45, 49, 57, 0.5);
+}
+
+.text-2xs {
+    font-size: 0.65rem;
+}
+
+.text-3xs {
+    font-size: 0.55rem;
+}
+
+/* Progress bar customization for tailwind override */
+.progress-fill {
+    transition: width 0.4s ease-out;
+}
+
+/* ===== Responsive overflow fixes ===== */
+/* Ensure no horizontal scroll and make media scale */
+html, body {
+    max-width: 100%;
+    overflow-x: hidden !important;
+}
+img, video, iframe {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block !important;
+}
+
+/* Allow flex/grid children to shrink and not force overflow */
+[class*="flex"] > *, [class*="grid"] > * {
+    min-width: 0 !important;
+}
+
+
+
+@media (max-width: 420px) {
+    /* Reduce big paddings that can cause overflow on very small screens */
+    .content, .hero, .page-header, .profile-header {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+}
+
+@media (max-width: 767px) {
+    .flex-1 > header,
+    header.sticky,
+    header.static {
+        padding-left: 5rem !important;
+        padding-right: 1rem !important;
+        gap: 0.75rem !important;
+    }
+
+    .flex-1 > header .flex.items-center.justify-between,
+    header.sticky .flex.items-center.justify-between,
+    header.static .flex.items-center.justify-between {
+        min-width: 0;
+    }
+
+    .flex-1 > header h1,
+    header.sticky h1,
+    header.static h1 {
+        font-size: 1rem !important;
+        line-height: 1.2 !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+    }
+
+    .flex-1 > header .flex.items-center.gap-2.flex-wrap,
+    header.sticky .flex.items-center.gap-2.flex-wrap,
+    header.static .flex.items-center.gap-2.flex-wrap {
+        flex-shrink: 0;
+        min-width: 0;
+    }
+
+    .flex-1 > header .flex.items-center.gap-2.flex-wrap > *,
+    header.sticky .flex.items-center.gap-2.flex-wrap > *,
+    header.static .flex.items-center.gap-2.flex-wrap > * {
+        min-width: 0;
+    }
+}
+
+/* Mobile sidebar drawer */
+#sidebar-menu {
+    width: 18rem;
+    max-width: 80vw;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+}
+
+#sidebar-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(6px);
+    z-index: 45;
+}
+
+#sidebar-backdrop.hidden {
+    display: none;
+}
+
+/* Compact main content headers like the simulator */
+.flex-1 > header {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+}
+
+@media (min-width: 640px) {
+    .flex-1 > header {
+        padding-left: 1.25rem !important;
+        padding-right: 1.25rem !important;
+        padding-top: 1rem !important;
+        padding-bottom: 1rem !important;
+    }
+}
+
+.flex-1 > header h1 {
+    font-size: 1.125rem !important;
+}
+
+.flex-1 > header .flex-1,
+.flex-1 > header .flex-wrap {
+    min-width: 0 !important;
+}
+
+/* End responsive overflow fixes */
+
+
+/* Light mode shadows for better container separation */
+.light .bg-card, .light .bg-popover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+/* Fix huge font size in Flatpickr native month select on Windows */
+.flatpickr-monthDropdown-months option {
+    font-size: 14px !important;
+    background-color: var(--color-input);
+    color: var(--color-foreground);
+    padding: 4px;
+}
+
+/* Styling Flatpickr number inputs (Time & Year arrows) */
+.flatpickr-calendar .numInputWrapper span.arrowUp,
+.flatpickr-calendar .numInputWrapper span.arrowDown {
+    border: none !important;
+    background: transparent;
+    opacity: 0.3;
+    transition: all 0.2s ease;
+}
+.flatpickr-calendar .numInputWrapper span.arrowUp:hover,
+.flatpickr-calendar .numInputWrapper span.arrowDown:hover {
+    opacity: 1;
+    background: rgba(0, 242, 255, 0.15) !important;
+}
+
+/* Styling Flatpickr days (Larger and perfectly round) */
+.flatpickr-calendar .flatpickr-day {
+    border-radius: 50% !important;
+    width: 42px !important;
+    height: 42px !important;
+    line-height: 42px !important;
+    margin: 2px !important;
+    font-size: 14px !important;
+    font-weight: 500;
+}
+.flatpickr-calendar .flatpickr-days {
+    width: auto !important;
+}
+.flatpickr-calendar .dayContainer {
+    width: 100% !important;
+    min-width: 310px !important;
+    justify-content: center;
 }

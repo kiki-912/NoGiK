@@ -258,6 +258,11 @@ function render_header($title = "NogiK - Academia DJ") {
     
     <!-- Lucide Icons CDN -->
     <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Flatpickr (Custom Datepicker) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/dark.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 <body class="bg-background text-foreground min-h-screen flex flex-col md:flex-row overflow-x-hidden">
     <?php
@@ -300,8 +305,9 @@ function render_sidebar() {
     
     $nav_items = $is_student ? $student_nav : $teacher_nav;
     ?>
+    <div id="sidebar-backdrop" class="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm hidden md:hidden"></div>
     <!-- Sidebar -->
-    <aside class="w-full md:w-64 md:h-screen md:sticky md:top-0 bg-background border-b md:border-b-0 md:border-r border-border flex flex-col justify-between flex-shrink-0">
+    <aside id="sidebar-menu" class="fixed inset-y-0 left-0 z-50 w-64 transform -translate-x-full md:translate-x-0 md:relative md:inset-auto md:w-64 bg-background border-b md:border-b-0 md:border-r border-border flex flex-col justify-between flex-shrink-0 transition-transform duration-300 ease-in-out">
         <div class="flex-1 flex flex-col min-h-0 overflow-y-auto">
             <!-- Header Brand -->
             <div class="flex items-center gap-3 px-6 py-5 border-b border-border">
@@ -433,6 +439,34 @@ function render_footer() {
     <!-- Initialize Lucide Icons -->
     <script>
       lucide.createIcons();
+      (function() {
+        const menu = document.getElementById('sidebar-menu');
+        const backdrop = document.getElementById('sidebar-backdrop');
+        const toggle = document.getElementById('mobile-menu-toggle');
+        const body = document.body;
+
+        if (toggle && menu && backdrop) {
+          function openMenu() {
+            menu.classList.remove('-translate-x-full');
+            menu.classList.add('translate-x-0');
+            backdrop.classList.remove('hidden');
+            body.classList.add('overflow-hidden');
+          }
+          function closeMenu() {
+            menu.classList.add('-translate-x-full');
+            menu.classList.remove('translate-x-0');
+            backdrop.classList.add('hidden');
+            body.classList.remove('overflow-hidden');
+          }
+          toggle.addEventListener('click', openMenu);
+          backdrop.addEventListener('click', closeMenu);
+          document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape' && !backdrop.classList.contains('hidden')) {
+              closeMenu();
+            }
+          });
+        }
+      })();
     </script>
 </body>
 </html>

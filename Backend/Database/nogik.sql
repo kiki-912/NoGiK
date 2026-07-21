@@ -179,6 +179,7 @@ CREATE TABLE `event_participations` (
   `id` VARCHAR(50) PRIMARY KEY,
   `event_id` VARCHAR(50) NOT NULL,
   `student_id` VARCHAR(50) NOT NULL,
+  `set_url` VARCHAR(255) DEFAULT '',
   `justification` TEXT NOT NULL,
   `submitted_at` DATETIME NOT NULL,
   `status` ENUM('pending', 'evaluated') DEFAULT 'pending',

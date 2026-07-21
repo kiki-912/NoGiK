@@ -19,20 +19,26 @@ if ($create) {
     render_header("Programar Clase - NogiK");
     render_sidebar();
     ?>
-    <div class="flex-1 flex flex-col min-w-0 bg-background">
+    <div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
         <!-- Header -->
-        <header class="sticky top-0 z-10 flex items-center gap-4 border-b border-border bg-background/95 backdrop-blur px-6 py-4">
-            <a href="teacher_classes.php" class="p-1.5 hover:bg-muted/30 rounded-lg text-muted-foreground hover:text-foreground">
+        <header class="sticky top-0 z-40 flex flex-wrap items-center gap-4 gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground ">Programar Nueva Clase</h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">Programa una lección para los estudiantes</p>
+            </div>
+        </div>
+            <a href="teacher_classes.php" class="p-1.5 hover:bg-muted/30 rounded-lg text-muted-foreground hover:text-foreground shrink-0">
                 <i data-lucide="arrow-left" class="h-5 w-5"></i>
             </a>
-            <div class="flex-1">
-                <h1 class="text-2xl font-bold text-foreground">Programar Nueva Clase</h1>
-                <p class="text-sm text-muted-foreground">Programa una lección para los estudiantes</p>
-            </div>
+            
         </header>
 
         <!-- Content -->
-        <div class="p-6 max-w-3xl mx-auto space-y-6 overflow-y-auto max-h-[calc(100vh-80px)] w-full">
+        <div class="p-4 sm:p-6 max-w-3xl mx-auto space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
             <form action="../Backend/scripts/actions.php" method="POST" class="space-y-6">
                 <input type="hidden" name="action" value="create_class">
                 
@@ -52,14 +58,29 @@ if ($create) {
                         <textarea id="description" name="description" rows="4" required placeholder="Describe lo que se enseñará en esta lección..." class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground resize-none focus:ring-1 focus:ring-primary focus:outline-none"></textarea>
                     </div>
 
+                    <input type="hidden" id="final_date" name="date">
+                    
                     <div class="grid sm:grid-cols-2 gap-4">
                         <div class="space-y-1.5">
-                            <label for="date" class="text-sm font-medium text-foreground">Fecha y Hora</label>
-                            <input id="date" name="date" type="datetime-local" required class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
+                            <label for="date_picker" class="text-sm font-medium text-foreground">Fecha de la Clase</label>
+                            <input id="date_picker" type="text" required placeholder="Selecciona una fecha" class="w-full flatpickr-date bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
                         </div>
                         <div class="space-y-1.5">
                             <label for="duration" class="text-sm font-medium text-foreground">Duración (minutos)</label>
                             <input id="duration" name="duration" type="number" min="15" max="360" value="90" required class="w-full bg-input border border-border rounded-lg px-3 py-2 text-sm text-foreground focus:ring-1 focus:ring-primary focus:outline-none">
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-1.5 mt-2 bg-[#1D2026]/50 p-4 rounded-xl border border-border/40">
+                        <div class="flex justify-between items-end">
+                            <label class="text-sm font-medium text-foreground">Hora de Inicio</label>
+                            <span id="time_display" class="text-2xl font-black text-primary drop-shadow-md">14:00</span>
+                        </div>
+                        <input type="range" id="time_slider" min="0" max="95" value="56" class="modal-slider mt-4 w-full" oninput="updateTimeSlider()">
+                        <div class="flex justify-between text-[10px] text-muted-foreground px-1 mt-2 font-mono">
+                            <span>00:00</span>
+                            <span>12:00</span>
+                            <span>23:45</span>
                         </div>
                     </div>
                 </div>
@@ -143,7 +164,56 @@ if ($create) {
             lucide.createIcons();
         }
 
-        function removeMaterialRow(button) {
+        
+    // Initialize Flatpickr for date inputs
+    if (typeof flatpickr !== 'undefined') {
+        flatpickr('.flatpickr-date', {
+            enableTime: false,
+            dateFormat: "Y-m-d",
+            minDate: "today",
+            monthSelectorType: "static",
+            onChange: function(selectedDates, dateStr, instance) {
+                updateTimeSlider();
+            }
+        });
+    }
+    
+    function updateTimeSlider() {
+        const slider = document.getElementById('time_slider');
+        const display = document.getElementById('time_display');
+        const finalDate = document.getElementById('final_date');
+        const datePicker = document.getElementById('date_picker');
+        
+        if (!slider || !display || !finalDate) return;
+        
+        const val = parseInt(slider.value);
+        const hours = Math.floor(val / 4);
+        const remainder = val % 4;
+        const mins = (remainder * 15).toString().padStart(2, '0');
+        
+        const hoursStr = hours.toString().padStart(2, '0');
+        const timeStr = hoursStr + ":" + mins;
+        
+        display.innerText = timeStr;
+        
+        // Update slider background dynamically
+        const percentage = (val / 95) * 100;
+        slider.style.background = `linear-gradient(to right, #00F2FF 0%, #00F2FF ${percentage}%, #252830 ${percentage}%, #252830 100%)`;
+        
+        // Combine date and time for backend
+        const dateVal = datePicker.value;
+        if (dateVal) {
+            finalDate.value = dateVal + " " + timeStr + ":00";
+        }
+    }
+    
+    // Initialize slider background and text on load
+    document.addEventListener('DOMContentLoaded', () => {
+        updateTimeSlider();
+    });
+
+
+    function removeMaterialRow(button) {
             button.closest('.material-row').remove();
         }
     </script>
@@ -195,24 +265,30 @@ if (!empty($class_id)) {
     render_header("Detalle de Clase - NogiK");
     render_sidebar();
     ?>
-    <div class="flex-1 flex flex-col min-w-0 bg-background">
+    <div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
         <!-- Header -->
-        <header class="sticky top-0 z-10 flex items-center gap-4 border-b border-border bg-background/95 backdrop-blur px-6 py-4">
-            <a href="teacher_classes.php" class="p-1.5 hover:bg-muted/30 rounded-lg text-muted-foreground hover:text-foreground">
-                <i data-lucide="arrow-left" class="h-5 w-5"></i>
-            </a>
-            <div class="flex-1">
-                <h1 class="text-2xl font-bold text-foreground"><?php echo htmlspecialchars($class_details['title']); ?></h1>
-                <p class="text-sm text-muted-foreground">
+        <header class="sticky top-0 z-40 flex flex-wrap items-center gap-4 gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground "><?php echo htmlspecialchars($class_details['title']); ?></h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">
                     Dictada por <?php echo htmlspecialchars($class_details['teacher_name']); ?> • 
                     <?php echo $cl_date->format('d/m/Y H:i'); ?> hs • 
                     <?php echo $class_details['duration']; ?> min
                 </p>
             </div>
+        </div>
+            <a href="teacher_classes.php" class="p-1.5 hover:bg-muted/30 rounded-lg text-muted-foreground hover:text-foreground shrink-0">
+                <i data-lucide="arrow-left" class="h-5 w-5"></i>
+            </a>
+            
         </header>
 
         <!-- Content -->
-        <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+        <div class="p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Left: Class Details (2 Cols) -->
                 <div class="lg:col-span-2 space-y-6">
@@ -436,21 +512,27 @@ render_sidebar();
 ?>
 
 <!-- Main Content Area -->
-<div class="flex-1 flex flex-col min-w-0 bg-background">
+<div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
     <!-- Header -->
-    <header class="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/95 backdrop-blur px-6 py-4">
-        <div>
-            <h1 class="text-2xl font-bold text-foreground">Clases</h1>
-            <p class="text-sm text-muted-foreground"><?php echo count($classes); ?> clases registradas en la academia</p>
+    <header class="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground ">Clases</h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate"><?php echo count($classes); ?> clases registradas en la academia</p>
+            </div>
         </div>
-        <a href="teacher_classes.php?create=1" class="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold px-4 py-2 rounded-lg text-sm hover:bg-primary/90 transition-colors">
+        
+        <a href="teacher_classes.php?create=1" class="inline-flex items-center gap-2 bg-primary text-primary-foreground font-semibold px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-xs sm:text-sm hover:bg-primary/90 transition-colors shrink-0">
             <i data-lucide="plus" class="h-4 w-4"></i>
             Programar Clase
         </a>
     </header>
 
     <!-- Content -->
-    <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+    <div class="p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
         
         <?php if ($success === 'class_created'): ?>
             <div class="bg-success/10 border border-success/20 text-success text-sm rounded-lg p-3">

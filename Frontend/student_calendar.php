@@ -86,22 +86,28 @@ if (!empty($class_id)) {
     render_header("Detalle de Clase - NogiK");
     render_sidebar();
     ?>
-    <div class="flex-1 flex flex-col min-w-0 bg-background">
+    <div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
         <!-- Header -->
-        <header class="sticky top-0 z-10 flex items-center gap-4 border-b border-border bg-background/95 backdrop-blur px-6 py-4">
-            <a href="student_calendar.php" class="p-1.5 hover:bg-muted/30 rounded-lg text-muted-foreground hover:text-foreground">
-                <i data-lucide="arrow-left" class="h-5 w-5"></i>
-            </a>
-            <div class="flex-1">
-                <h1 class="text-2xl font-bold text-foreground"><?php echo htmlspecialchars($class_details['title']); ?></h1>
-                <p class="text-sm text-muted-foreground">
+        <header class="sticky top-0 z-40 flex flex-wrap items-center gap-4 gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground "><?php echo htmlspecialchars($class_details['title']); ?></h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">
                     Dictada por <?php echo htmlspecialchars($class_details['teacher_name']); ?> • 
                     <?php echo $cl_date->format('d/m/Y H:i'); ?> hs • 
                     <?php echo $class_details['duration']; ?> min
                 </p>
             </div>
+        </div>
+            <a href="student_calendar.php" class="p-1.5 hover:bg-muted/30 rounded-lg text-muted-foreground hover:text-foreground shrink-0">
+                <i data-lucide="arrow-left" class="h-5 w-5"></i>
+            </a>
             
-            <div class="flex-shrink-0">
+            
+            <div class="shrink-0">
                 <?php if ($class_details['status'] === 'upcoming'): ?>
                     <?php if ($is_registered): ?>
                         <span class="inline-flex items-center gap-1.5 bg-success/15 border border-success/30 text-success text-xs font-bold px-4 py-2 rounded-lg">
@@ -131,7 +137,7 @@ if (!empty($class_id)) {
         </header>
 
         <!-- Content -->
-        <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+        <div class="p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <!-- Left: Class Details (2 Cols) -->
                 <div class="lg:col-span-2 space-y-6">
@@ -249,17 +255,23 @@ render_sidebar();
 ?>
 
 <!-- Main Content Area -->
-<div class="flex-1 flex flex-col min-w-0 bg-background">
+<div class="flex-1 flex flex-col min-w-0 bg-background w-full max-w-full md:max-w-none">
     <!-- Header -->
-    <header class="sticky top-0 z-10 flex items-center justify-between border-b border-border bg-background/95 backdrop-blur px-6 py-4">
-        <div>
-            <h1 class="text-2xl font-bold text-foreground">Calendario de Clases</h1>
-            <p class="text-sm text-muted-foreground">Mantente al tanto de tus próximas lecciones y sesiones formativas</p>
+    <header class="sticky top-0 z-40 flex flex-wrap items-center justify-between gap-y-3 border-b border-border bg-background/95 backdrop-blur px-4 sm:px-6 py-3 sm:py-4">
+        <div class="flex items-center gap-3 flex-auto min-w-[200px]">
+            <button id="mobile-menu-toggle" type="button" class="md:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-border text-foreground hover:bg-muted/80 shrink-0 transition-colors" aria-label="Abrir menú">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+            <div class="flex-auto min-w-0">
+                <h1 class="whitespace-normal text-lg sm:text-2xl font-bold text-foreground ">Calendario de Clases</h1>
+                <p class="text-xs sm:text-sm text-muted-foreground hidden sm:block truncate">Mantente al tanto de tus próximas lecciones y sesiones formativas</p>
+            </div>
         </div>
+        
     </header>
 
     <!-- Content -->
-    <div class="p-6 space-y-6 overflow-y-auto max-h-[calc(100vh-80px)]">
+    <div class="p-4 sm:p-6 space-y-6 overflow-y-auto overflow-x-hidden max-h-[calc(100vh-80px)] w-full">
         
         <?php if ($success === 'joined'): ?>
             <div class="bg-success/10 border border-success/20 text-success text-sm rounded-lg p-3">
@@ -269,6 +281,7 @@ render_sidebar();
             <div class="bg-primary/10 border border-primary/20 text-primary text-sm rounded-lg p-3">
                 Ya estás registrado en esta clase.
             </div>
+        <?php endif; ?>
         <?php
         // Persistencia de Vista y Fecha del Calendario
         if (isset($_GET['view'])) {
